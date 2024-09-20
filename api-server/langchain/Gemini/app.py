@@ -1,15 +1,14 @@
 import os
 from dotenv import load_dotenv
-import streamlit as st
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.runnables import chain
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 # Load environment variables
 load_dotenv()
 
 # Print credentials for debugging (ensure to remove this in production)
-print("Google Application Credentials:", os.getenv("GOOGLE_APPLICATION_CREDENTIALS"))
 
 # Initialize the Google Gemini model
 llm = ChatGoogleGenerativeAI(
@@ -20,35 +19,46 @@ llm = ChatGoogleGenerativeAI(
     max_retries=2,
 )
 
-# Streamlit app setup
-st.title("Langchain Demo With Gemini-1.5 Pro Model")
+# Initialize message history
+chat_history = ChatMessageHistory()
 
-# Create a structured prompt using ChatPromptTemplate
-prompt_template = ChatPromptTemplate.from_messages(
-    [
-        ("system", "You are a helpful assistant. Answer all the questions to the best of your ability."),
-        MessagesPlaceholder(variable_name="messages")
-    ]
-)
+def main():
+    # Console-based input loop
+    while True:
+        # Input box for user question
+        input_text = input("What question do you have in mind? (Type 'exit' to quit): ")
 
-# Set up the chain using prompt_template and llm
-LLM_chain = prompt_template | llm
+        if input_text.lower() == 'exit':
+            break
 
-# Input box for user question
-input_text = st.text_input("What question do you have in mind?")
+        if input_text:
+            try:
+                # Add the user message to the history
+                chat_history.add_user_message(input_text)
+                
+                # Prepare the messages for the chain using LangChain message classes
+                messages = [SystemMessage(content="You are a helpful assistant. Answer all questions to the best of your ability.")]
+                
+                # Convert history into LangChain's message types
+                for message in chat_history.messages:
+                    if message.type == "human":
+                        messages.append(HumanMessage(content=message.content))
+                    else:
+                        messages.append(AIMessage(content=message.content))
 
-if input_text:
-    try:
-        # Prepare the input for the chain without wrapping them in SystemMessage or HumanMessage classes
-        messages = [{"role": "user", "content": input_text}]
-        
-        # Execute the chain with the user's input
-        result = LLM_chain.invoke({"messages": messages})
+                # Execute the LLM with the history and current message
+                result = llm(messages)  # Call LLM with messages
 
-        # Display the result
-        st.write(result)
+                # Add the assistant's response to the chat history
+                chat_history.add_ai_message(result.content)  # Access the content directly
 
-    except ConnectionError:
-        st.error("Failed to connect to the service. Please ensure the service is running.")
-    except Exception as e:
->
+                # Display the result
+                print(f"AI: {result.content}\n")
+
+            except ConnectionError:
+                print("Failed to connect to the service. Please ensure the service is running.")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main()
