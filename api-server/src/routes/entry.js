@@ -5,14 +5,15 @@ const router = express.Router();
 const docker = new Docker();
 
 // create rand numer for container name
-const rand = Math.floor(Math.random() * 1000);
+
+``
+
+router.post('/create-container', async (req, res) => {
+    const rand = Math.floor(Math.random() * 1000);
 
 // Hardcoded values for image and name
 const image =  'python'; // Example image
-const name = 'prompt-flow-container' +"3333"+ rand; // Example container name
-
-
-router.post('/create-container', async (req, res) => {
+const name = 'prompt-flow-container' +"122"+ rand; // Example container name
     try {
         // Create a new Docker container
         const container = await docker.createContainer({

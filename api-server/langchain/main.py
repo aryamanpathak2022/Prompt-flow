@@ -15,9 +15,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from run_command import run_command
 from zip_upload import upload_zip_to_firebase
 import shutil
+print("hello how are you1")
 
 # Set up the API key from environment variables
-os.environ["GOOGLE_API_KEY"] = "AIzaSyDT5APeRMTlb_9LC_Lp2ctZEUt1Fo0VOyg"
+os.environ["GOOGLE_API_KEY"] = "AIzaSyAdHo_TU-gm4fKBdqRJv7O2Fmh9hDqM-b4"
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.7)
@@ -26,6 +27,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.7)
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
+print("hello how are you2")
 
 context='''You are an expert software developer.Provide initial setup for frontend application Initial Setup. dont include file structure and rememeer at last Ensure the following:
 give   Initial Setup
@@ -49,7 +51,7 @@ terminal: touch src/App.js"
 
 '''
 
-user_input = input("Enter some data: ")
+user_input = "create gym website"
 
 # Create a prompt template
 prompt_template = PromptTemplate.from_template(f"{user_input}\n{context.replace('{', '{{').replace('}', '}}')}")
@@ -60,10 +62,12 @@ chain = LLMChain(llm=llm, prompt=prompt_template)
 
 # Get user input
 
+print("hello how are you4")
 
 try:
-    response = chain.invoke({"user_input": user_input})
-    print(response)
+    # response = chain.invoke({"user_input": user_input})
+    print("response")
+
 except Exception as e:
     print(f"An error occurred: {e}")
 
@@ -77,9 +81,9 @@ memory = ConversationBufferMemory()
 conversation_chain = ConversationChain(llm=llm, memory=memory)
 
 # Simulate conversation
-response1 = conversation_chain.run(f"{user_input}\n{context.replace('{', '{{').replace('}', '}}')}")
+# response1 = conversation_chain.run(f"{user_input}\n{context.replace('{', '{{').replace('}', '}}')}")
 
-response1
+# response1
 
 context2 ='''You are an expert software developer.now the initial setup is done give only the names of all the pages in this project only the names  Ensure the following:
 give   Initial Setup
@@ -97,9 +101,9 @@ give   Initial Setup
 
 
 
-response2=conversation_chain.run(f"{user_input}\n{context2.replace('{', '{{').replace('}', '}}')}")
+# response2=conversation_chain.run(f"{user_input}\n{context2.replace('{', '{{').replace('}', '}}')}")
 
-response2
+# response2
 
 def extract_pages(text):
     # Split the text into lines
@@ -186,9 +190,9 @@ export default App;
 2) use images form web like unsplash
 '''
 
-response3=conversation_chain.run(f"{user_input}\n{pages[0]}\n{context3.replace('{', '{{').replace('}', '}}')}")
+# response3=conversation_chain.run(f"{user_input}\n{pages[0]}\n{context3.replace('{', '{{').replace('}', '}}')}")
 
-response3
+# response3
 
 def extract_terminal_commands(input_string):
     # Split the input string by lines
@@ -202,22 +206,22 @@ def extract_terminal_commands(input_string):
 # Example usage
 
 
-input_string = response['text']
-print(input_string)  # Change 'data' to the appropriate key
-commands_list = extract_terminal_commands(input_string)
-print(commands_list)
+# input_string = response['text']
+# print(input_string)  # Change 'data' to the appropriate key
+# commands_list = extract_terminal_commands(input_string)
+# print(commands_list)
 
-for command in commands_list:
-    run_command(command)
+# for command in commands_list:
+run_command("mkdir gym-website-frontend")
+run_command("cd gym-website-frontend")
+run_command("touch aryaman.txt")
+run_command("ls")
 
-def zip_current_folder(zip_file_name):
-    # Get the current directory
-    current_dir = os.getcwd()
-    
-    # Create a zip file in the current directory
-    shutil.make_archive(zip_file_name, 'zip', current_dir)
+
+
+
 
 # Usage
-zip_current_folder('frontend')
+# zip_current_folder('frontend')
 
-upload_zip_to_firebase("frontend")
+upload_zip_to_firebase("aryaman.txt")
