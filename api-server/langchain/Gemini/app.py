@@ -4,6 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.output_parsers import StrOutputParser
 
 # Load environment variables
 load_dotenv()
@@ -20,13 +21,16 @@ llm = ChatGoogleGenerativeAI(
 # Initialize message history
 chat_history = ChatMessageHistory()
 
+generic_template="You are a helpful assistant. give the code for the specified task given by the user"
 # Create a structured prompt using ChatPromptTemplate
-prompt_template = ChatPromptTemplate.from_messages(
+prompt = ChatPromptTemplate.from_messages(
     [
-        SystemMessage(content="You are a helpful assistant. give the code for the specified task given by the user"),
-        MessagesPlaceholder(variable_name="messages")
+        ("system",generic_template),
+        ("user","{text}")
     ]
 )
+
+parser=StrOutputParser()
 
 def main():
     # Console-based input loop
@@ -53,19 +57,22 @@ def main():
                         messages.append(AIMessage(content=message.content))
 
                 # Prepare the input for the chain with the structured prompt
-                prompt_input = {"messages": messages}
+                # prompt_input = {"messages": messages}
                 
-                # Use the prompt template to generate the chat prompt value
-                prompt_value = prompt_template.format_prompt(**prompt_input)
+                # # Use the prompt template to generate the chat prompt value
+                # prompt_value = prompt_template.format_prompt(**prompt_input)
                 
                 # Execute the LLM with the generated messages (extracting from prompt value)
-                result = llm(prompt_value.to_messages())
+                # result = llm(prompt_value.to_messages())
+                # result=llm.invoke(prompt_value)
+                chain=prompt|llm | parser
 
+                result=chain.invoke({"text":input_text})
                 # Add the assistant's response to the chat history
-                chat_history.add_ai_message(result.content)  # Access the content directly
+                chat_history.add_ai_message(result)  # Access the content directly
 
                 # Display the result
-                print(f"AI: {result.content}\n")
+                print(f"AI: {result}\n")
 
             except ConnectionError:
                 print("Failed to connect to the service. Please ensure the service is running.")
