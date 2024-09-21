@@ -180,6 +180,4 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/aryamanpathak2022/Prompt-flow/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=othneildrew/Best-README-Template" alt="contrib.rocks image" />
-</a>
+[![Contributors](https://contrib.rocks/image?repo=aryamanpathak2022/Prompt-flow)](https://github.com/aryamanpathak2022/Prompt-flow/graphs/contributors)
