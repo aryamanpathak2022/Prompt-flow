@@ -65,7 +65,7 @@ def main():
                 # Execute the LLM with the generated messages (extracting from prompt value)
                 # result = llm(prompt_value.to_messages())
                 # result=llm.invoke(prompt_value)
-                chain=prompt|llm | parser
+                chain=prompt| llm | parser
 
                 result=chain.invoke({"text":input_text})
                 # Add the assistant's response to the chat history
