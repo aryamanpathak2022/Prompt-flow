@@ -1,10 +1,12 @@
 import os
 from dotenv import load_dotenv
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.output_parsers import StrOutputParser
+from fastapi import FastAPI
+from langserve import add_routes
 
 # Load environment variables
 load_dotenv()
@@ -21,16 +23,41 @@ llm = ChatGoogleGenerativeAI(
 # Initialize message history
 chat_history = ChatMessageHistory()
 
-generic_template="You are a helpful assistant. give the code for the specified task given by the user"
+# The template for generating the response
+generic_template = '''You are an expert software developer. Provide initial setup for frontend application Initial Setup. Don't include file structure and remember at last Ensure the following:
+give Initial Setup
+1. **Terminal commands** should start with "terminal:" followed by the command.
+2. only setup, don't include code and all, only setup
+
+6)example output:
+
+terminal: mkdir my-frontend-app
+terminal: cd my-frontend-app
+terminal: npm init -y
+
+terminal: npm install react react-dom
+terminal: mkdir src
+terminal: touch src/index.js
+terminal: touch src/App.js
+'''
+
 # Create a structured prompt using ChatPromptTemplate
 prompt = ChatPromptTemplate.from_messages(
     [
-        ("system",generic_template),
-        ("user","{text}")
+        ("system", generic_template),
+        ("user", "{text}")
     ]
 )
 
-parser=StrOutputParser()
+parser = StrOutputParser()
+
+# Initialize the Langchain pipeline (chain)
+chain = prompt | llm | parser
+
+# Create FastAPI app
+app = FastAPI(title="Langchain Server",
+              version="1.0",
+              description="A simple API server using Langchain runnable interfaces")
 
 def main():
     # Console-based input loop
@@ -56,18 +83,9 @@ def main():
                     else:
                         messages.append(AIMessage(content=message.content))
 
-                # Prepare the input for the chain with the structured prompt
-                # prompt_input = {"messages": messages}
-                
-                # # Use the prompt template to generate the chat prompt value
-                # prompt_value = prompt_template.format_prompt(**prompt_input)
-                
-                # Execute the LLM with the generated messages (extracting from prompt value)
-                # result = llm(prompt_value.to_messages())
-                # result=llm.invoke(prompt_value)
-                chain=prompt| llm | parser
+                # Execute the LLM with the generated messages
+                result = chain.invoke({"text": input_text})
 
-                result=chain.invoke({"text":input_text})
                 # Add the assistant's response to the chat history
                 chat_history.add_ai_message(result)  # Access the content directly
 
@@ -79,5 +97,13 @@ def main():
             except Exception as e:
                 print(f"An error occurred: {e}")
 
+# Add routes to the FastAPI app
+add_routes(
+    app,
+    chain,  # Ensure `chain` is passed here correctly
+    path="/chain"
+)
+
 if __name__ == "__main__":
-    main()
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
