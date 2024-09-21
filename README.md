@@ -1,9 +1,24 @@
 # Prompt Flow
 
 ## Overview
-![Overview Image](path/to/overview-image.png)
+![image](https://github.com/user-attachments/assets/f4e48cde-9781-4686-a484-f5902ded0c30)
 
 **Prompt Flow** is an AI-orchestrated code generation and autonomous deployment pipeline that utilizes LangChain and large language models (LLMs) to empower users in developing entire projects through natural language prompts. It automatically generates a complete folder structure, writes code, and configures all necessary files for specified frameworks or languages.
+
+
+## Features
+
+![image](https://github.com/user-attachments/assets/111594d9-c984-4b6e-98d1-db130fc7b6bd)
+
+
+![image](https://github.com/user-attachments/assets/c172a6a1-4f16-4ff8-8200-03ed821bf10b)
+
+![image](https://github.com/user-attachments/assets/cd39df3c-b249-423d-a037-455020abc5e3)
+
+![image](https://github.com/user-attachments/assets/1d6a2237-f386-488a-b870-53c9da2320a3)
+
+![image](https://github.com/user-attachments/assets/191408d6-7d9f-43c5-97f5-7d25141c73b2)
+
 
 ## Technologies Used
 ![LangChain Logo](path/to/langchain-logo.png)
@@ -16,26 +31,6 @@
 - **AWS**: For cloud deployment and scalability.
 - **GCP**: For cloud deployment and scalability.
 
-## Features
-### Natural Language to Code Generation
-![Natural Language to Code Image](path/to/natural-language-to-code-image.png)
-- Converts natural language prompts into full project structures, including code and configuration files, enabling rapid development and simplifying the process for non-technical users.
-
-### Dynamic Web Access for Real-Time Framework Support
-![Dynamic Web Access Image](path/to/dynamic-web-access-image.png)
-- Accesses the web via a Docker container to fetch up-to-date documentation and support for new languages or frameworks, ensuring compatibility with the latest tools and technologies.
-
-### Seamless Cloud Deployment Integration
-![Cloud Deployment Image](path/to/cloud-deployment-image.png)
-- Automatically generates cloud-ready configurations for AWS, GCP, and Kubernetes, facilitating quick and scalable deployments and reducing manual setup.
-
-### End-to-End SDLC Automation
-![SDLC Automation Image](path/to/sdlc-automation-image.png)
-- Automates the entire software development lifecycle (SDLC) from code generation to testing and deployment, integrating CI/CD pipelines for continuous integration and delivery.
-
-### Flexible Execution and Testing via Docker
-![Docker Execution Image](path/to/docker-execution-image.png)
-- Allows real-time execution, testing, and validation of projects in isolated environments, ensuring consistency across different stages of development and reducing local setup requirements.
 
 ## Key Comparisons
 1. **Full SDLC Automation vs. Manual Setup**

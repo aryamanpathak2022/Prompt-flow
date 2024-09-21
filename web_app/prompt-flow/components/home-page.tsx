@@ -23,19 +23,19 @@ const features = [
   {
     title: "Seamless Cloud Deployment Integration",
     description: "Generate cloud-ready configurations for AWS, GCP, and Kubernetes automatically. Enjoy quick and scalable deployments with reduced manual setup.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/cloud.png?height=400&width=600",
     icon: <Zap className="w-8 h-8 text-yellow-500" />
   },
   {
     title: "End-to-End SDLC Automation",
     description: "Automate your entire software development lifecycle. From code generation to testing and deployment, integrate CI/CD pipelines for a streamlined workflow.",
-    image: "/brain.png?height=200&width=600",
+    image: "/machine.png?height=200&width=600",
     icon: <ArrowRight className="w-8 h-8 text-purple-500" />
   },
   {
     title: "Flexible Execution and Testing via Docker",
     description: "Execute, test, and validate projects in isolated Docker environments. Ensure consistency across development stages and reduce local setup requirements.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/bg.png?height=400&width=600",
     icon: <Box className="w-8 h-8 text-red-500" />
   }
 ]
