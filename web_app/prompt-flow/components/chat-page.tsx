@@ -96,7 +96,7 @@ export function ChatPageComponent() {
           <Button variant="ghost" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="mr-4">
             <Menu size={24} />
           </Button>
-          <TypewriterEffect text="Hello! Start Developing With Prompt-Flow" />
+          <TypewriterEffect text="Heello! Start Developin With Prompt-Flow" />
         </header>
 
         {/* Chat Messages */}
