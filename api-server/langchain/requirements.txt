@@ -13,3 +13,6 @@ langchain_google_genai
 streamlit
 langchain-core
 firebase_admin
+langserve
+fastapi
+sse_starlette
