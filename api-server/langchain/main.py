@@ -184,7 +184,10 @@ def clean_commands(command_list):
     return [command.strip('* `').strip() for command in command_list]
 cleaned_commands = clean_commands(commands_list)
 
-run_command("npm install")
+# run_command("RUN apt-get update")
+# run_command('apt install npm')
+# run_command('apt install node')
+
 for command in cleaned_commands:
     print(command)
     run_command('npm cache clean --force')

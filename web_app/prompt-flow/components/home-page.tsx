@@ -5,19 +5,19 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Code, Cloud, Zap, Box } from 'lucide-react'
-import naturalLanguageImage from '../images/natural_language_to_code_generation.png';
+// import naturalLanguageImage from '../images/natural_language_to_code_generation.png';
 
 const features = [
   {
     title: "Natural Language to Code Generation",
     description: "Convert natural language prompts into full project structures, including code and configuration files. Simplify development for technical and non-technical users alike.",
-    image: "components/images/natural_language_to_code_generation.png?height=400&width=600",
+    image: "/natural_language_to_code_generation.png?height=400&width=600",
     icon: <Code className="w-8 h-8 text-blue-500" />
   },
   {
     title: "Dynamic Web Access for Real-Time Framework Support",
     description: "Access up-to-date documentation and support for new languages or frameworks via our LLM-powered Docker container. Stay compatible with the latest tools and technologies.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/coder_background.png?height=400&width=600",
     icon: <Cloud className="w-8 h-8 text-green-500" />
   },
   {
@@ -29,7 +29,7 @@ const features = [
   {
     title: "End-to-End SDLC Automation",
     description: "Automate your entire software development lifecycle. From code generation to testing and deployment, integrate CI/CD pipelines for a streamlined workflow.",
-    image: "/placeholder.svg?height=400&width=600",
+    image: "/brain.png?height=200&width=600",
     icon: <ArrowRight className="w-8 h-8 text-purple-500" />
   },
   {
@@ -46,7 +46,7 @@ export function HomePageComponent() {
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur-md sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center">
-            <img src="/placeholder.svg?height=40&width=40" alt="Prompt Flow Logo" className="mr-4" />
+            <img src="/terminal.png?height=4&width=4" alt="Prompt Flow Logo" className="mr-4 h-7 w-7" />
             <h1 className="text-2xl font-bold text-gray-800 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">Prompt Flow</h1>
           </div>
           <nav>
