@@ -8,6 +8,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 from fastapi import FastAPI
 from langserve import add_routes
 
+
 # Load environment variables
 load_dotenv()
 
@@ -101,6 +102,12 @@ The generated output should include:
 '''
 
 parser = StrOutputParser()
+
+# chain = prompt | llm | parser
+
+app = FastAPI(title="Langchain Server",
+              version="1.0",
+              description="A simple API server using Langchain runnable interfaces")
 
 def main():
     while True:
@@ -275,11 +282,23 @@ Please provide sample content for the `.env` file, including these variables. Ma
                 # Process each backend template to generate corresponding code
                 for item in backend_templates:
                     result_code = llm.invoke(item["template"])
+                    # resulst_code=chain.invoke(item["template"])
                     chat_history.add_ai_message(result_code)
                     print(f"AI (Backend Code - {item['description']}): {parser.invoke(result_code)}\n")
 
             except Exception as e:
                 print(f"An error occurred: {e}")
 
+add_routes(
+    app,
+    chain,  # Ensure `chain` is passed here correctly
+    path="/result"
+)
+
 if __name__ == "__main__":
-    main()
+    #to run locally
+    #main()
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
