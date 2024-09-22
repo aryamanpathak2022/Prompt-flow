@@ -33,26 +33,19 @@
 
 ### Frontend Technologies
 - React
-- Vue.js
 - Next.js
-- GraphQL
 
 ### Backend Technologies
 - Node.js
 - Express.js
-- Django
 - Flask
 
 ### Databases
-- MongoDB
-- PostgreSQL
-- Redis
+-Firebase
 
 ### DevOps Tools
 - Kubernetes
-- Terraform
-
-
+- Docker
 
 ## Key Comparisons
 1. **Full SDLC Automation vs. Manual Setup**
@@ -80,14 +73,31 @@ To set up Prompt Flow locally, follow these steps:
 ### Steps to Install
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/Prompt-flow.git
-1. **Build the Docker Image**:
+   git clone https://github.com/aryamanpathak2022/Prompt-flow.git
+1. **Pull the Base Docker Image**:
    ```bash
-   docker build -t your-image-name .
+   docker build -t  .
 
 1. **Run the Docker container**:
    ```bash
-   docker run -p 8080:80 your-image-name
+   docker pull nikolaik/python-nodejs
+
+1. **Run the Web app **:
+   ```bash
+   cd webapp
+   cd Prompt-flow
+   npm i
+   npm run dev
+   
+1. **Run the Docker container**:
+   ```bash
+   cd api-server
+   cd src
+   node index.js
+
+1. **Run the Docker container**:
+   ```bash
+   docker pull nikolaik/python-nodejs
    
 1. **Configure Environment Variables:**:
    ```bash
