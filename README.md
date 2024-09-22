@@ -91,10 +91,10 @@ To set up Prompt Flow locally, follow these steps:
    
 1. **Configure Environment Variables:**:
    ```bash
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   GCP_PROJECT_ID=your_project_id
-   GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+   AWS_ACCESS_KEY_ID=your_access_key    #for deploying
+   AWS_SECRET_ACCESS_KEY=your_secret_key   #for deploying
+   GCP_PROJECT_ID=your_project_id  #For firebase database
+   GOOGLE_API_KEY=YOUR_GEMINI_API_KEY    #Gen ai
 
 1. **Install Dependencies (if applicable):**:
    ```bash
