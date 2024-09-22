@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Code, Cloud, Zap, Box } from 'lucide-react'
+import { ChatPageComponent } from './chat-page'
 // import naturalLanguageImage from '../images/natural_language_to_code_generation.png';
 
 const features = [
@@ -83,12 +84,15 @@ export function HomePageComponent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Link href="/chatpage">
-              <Button className="bg-blue-500 text-white hover:bg-blue-600 text-lg px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                Start Building
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
+            <Link href="/chat-page" passHref>
+  
+    <Button className="bg-blue-500 text-white hover:bg-blue-600 text-lg px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      Start Building
+      <ArrowRight className="ml-2 w-5 h-5" />
+    </Button>
+  
+</Link>
+
           </motion.div>
         </section>
 
