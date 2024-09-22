@@ -3,16 +3,21 @@ print("LLM STARTED INSIDE DOCKER CONTAINER")
 import os
 import google.generativeai as genai
 from langchain_google_genai import ChatGoogleGenerativeAI
-from run_command import run_command
+from run_command import run_command,run_command_create
 from zip_upload import upload_zip_to_firebase
 import shutil
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain import ConversationChain
 from langchain.memory import ConversationBufferMemory
+import re
+
+def remove_special_characters_ends(text):
+    # This regex pattern removes special characters from the beginning and end of the string
+    return re.sub(r'^[^a-zA-Z0-9\s]+|[^a-zA-Z0-9\s]+$', '', text)
 
 # Set up the API key from environment variables
-os.environ["GOOGLE_API_KEY"] = "AIzaSyD5fL8haAvmhHrGTWWSXNZ1vkCRY-5-4m0"
+os.environ["GOOGLE_API_KEY"] = "AIzaSyCT8ZiaBxWtiM2UaVykpZBKlVZVZ95PM8Q"
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.7)
@@ -181,11 +186,23 @@ commands_list = extract_terminal_commands(input_string)
 print(commands_list)
 
 def clean_commands(command_list):
-    return [command.strip('* `').strip() for command in command_list]
+    return [command.strip('`').strip() for command in command_list]
 cleaned_commands = clean_commands(commands_list)
 
-run_command("npm install")
+
+final_commands=[]
 for command in cleaned_commands:
+  final_commands.append(remove_special_characters_ends(command))
+  
+
+# run_command("RUN apt-get update")
+# run_command('apt install npm')
+run_command('mkdir frontend',"/")
+run_command('npm init -y')
+run_command('npm install react')
+
+
+for command in final_commands:
     print(command)
     run_command('npm cache clean --force')
     run_command(command)

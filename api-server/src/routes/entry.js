@@ -21,10 +21,14 @@ const name = 'prompt-flow-container' +"122"+ rand; // Example container name
             name: name,
             Tty: true,
             HostConfig: {
-                Binds: ['E:/Prompt-flow/api-server/langchain:/app/langchain'], // Mount langchain folder
+                Binds: ['/home/hemang/Desktop/Prompt-flow/api-server/langchain:/app/langchain'], // Correct path format for Docker
             },
-            cmd: [    'bash', '-c',    'pip install -r /app/langchain/requirements.txt; python3 /app/langchain/main.py; tail -f /dev/null']
+            Cmd: [
+                'bash', '-c', 
+                'pip install -r /app/langchain/requirements.txt; python3 /app/langchain/main.py; tail -f /dev/null'
+            ]
         });
+        
         
         
 
