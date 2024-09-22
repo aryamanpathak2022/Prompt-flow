@@ -74,11 +74,8 @@ To set up Prompt Flow locally, follow these steps:
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/aryamanpathak2022/Prompt-flow.git
-1. **Pull the Base Docker Image**:
-   ```bash
-   docker build -t  .
 
-1. **Run the Docker container**:
+1. **Pull the Docker image**:
    ```bash
    docker pull nikolaik/python-nodejs
 
@@ -89,15 +86,11 @@ To set up Prompt Flow locally, follow these steps:
    npm i
    npm run dev
    
-1. **Run the Docker container**:
+1. **Run the backend **:
    ```bash
    cd api-server
    cd src
    node index.js
-
-1. **Run the Docker container**:
-   ```bash
-   docker pull nikolaik/python-nodejs
    
 1. **Configure Environment Variables:**:
    ```bash
@@ -106,7 +99,8 @@ To set up Prompt Flow locally, follow these steps:
    GCP_PROJECT_ID=your_project_id  #For firebase database
    GOOGLE_API_KEY=YOUR_GEMINI_API_KEY    #Gen ai
 
-1. **Install Dependencies (if applicable):**:
+1. **Install Dependencies:**:
    ```bash
-   npm install
+   cd api-backend
+   cd langchain
    pip install -r requirements.txt
