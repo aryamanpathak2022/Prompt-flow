@@ -1,6 +1,6 @@
 # Prompt Flow
 ## Overview
-![image](assets/f4e48cde-9781-4686-a484-f5902ded0c30)
+![image](https://github.com/user-attachments/assets/f4e48cde-9781-4686-a484-f5902ded0c30)
 
 **Prompt Flow** is an AI-orchestrated code generation and autonomous deployment pipeline that utilizes LangChain and large language models (LLMs) to empower users in developing entire projects through natural language prompts. It automatically generates a complete folder structure, writes code, and configures all necessary files for specified frameworks or languages.
 
@@ -22,7 +22,7 @@
 
 
 ## Our Chat Bot
-![image](https://github.com/user-attachments/assets/f4e48cde-9781-4686-a484-f5902ded0c30)
+
 
 
 ## Technologies Used
