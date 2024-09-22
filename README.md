@@ -20,15 +20,32 @@
 
 
 ## Technologies Used
-![LangChain Logo](path/to/langchain-logo.png)
-![Docker Logo](path/to/docker-logo.png)
-![AWS Logo](path/to/aws-logo.png)
-![GCP Logo](path/to/gcp-logo.png)
+- LangChain
+- Docker
+- AWS
+- GCP
 
-- **LangChain**: For natural language processing and code generation.
-- **Docker**: For creating isolated environments for execution and testing.
-- **AWS**: For cloud deployment and scalability.
-- **GCP**: For cloud deployment and scalability.
+### Frontend Technologies
+- React
+- Vue.js
+- Next.js
+- GraphQL
+
+### Backend Technologies
+- Node.js
+- Express.js
+- Django
+- Flask
+
+### Databases
+- MongoDB
+- PostgreSQL
+- Redis
+
+### DevOps Tools
+- Kubernetes
+- Terraform
+
 
 
 ## Key Comparisons
@@ -39,7 +56,6 @@
    - While current tools rely on predefined support for frameworks, Prompt Flow dynamically accesses web resources for up-to-date documentation, enabling it to adapt to cutting-edge frameworks and evolving languages effortlessly.
 
 ## Comprehensive Infrastructure
-![Infrastructure Image](path/to/infrastructure-image.png)
 - Utilizes Docker, LangChain, and access to cloud providers (AWS, GCP) for dynamic project execution, deployment, and web access, supporting CI/CD integration and real-time updates for evolving frameworks.
 
 ## LLM and LangChain Optimization
@@ -53,8 +69,28 @@ To set up Prompt Flow locally, follow these steps:
 ### Prerequisites
 - Ensure you have [Docker](https://docs.docker.com/get-docker/) installed on your machine.
 - Make sure you have [Git](https://git-scm.com/downloads) installed.
+- Make sure you Create [GeminiApiKey](https://ai.google.dev/gemini-api/docs/api-key)
 
 ### Steps to Install
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/yourusername/Prompt-flow.git
+1. **Build the Docker Image**:
+   ```bash
+   docker build -t your-image-name .
+
+1. **Run the Docker container**:
+   ```bash
+   docker run -p 8080:80 your-image-name
+   
+1. **Configure Environment Variables:**:
+   ```bash
+   AWS_ACCESS_KEY_ID=your_access_key
+   AWS_SECRET_ACCESS_KEY=your_secret_key
+   GCP_PROJECT_ID=your_project_id
+   GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+
+1. **Install Dependencies (if applicable):**:
+   ```bash
+   npm install
+   pip install -r requirements.txt
