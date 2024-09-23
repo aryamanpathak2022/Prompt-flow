@@ -58,7 +58,6 @@
 - Utilizes Docker, LangChain, and access to cloud providers (AWS, GCP) for dynamic project execution, deployment, and web access, supporting CI/CD integration and real-time updates for evolving frameworks.
 
 ## LLM and LangChain Optimization
-![LLM Optimization Image](path/to/llm-optimization-image.png)
 - Features an optimized LLM integrated with LangChain for natural language processing, focusing on efficient prompt handling, accurate code generation, and seamless cloud deployment.
 
 ## Installation
