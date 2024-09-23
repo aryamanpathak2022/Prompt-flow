@@ -1,9 +1,15 @@
-from langchain.chains import LLMChain
+import os
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.output_parsers import StrOutputParser
 from fastapi import FastAPI
 from langserve import add_routes
+from langchain_core.chains import LLMChain
+
+load_dotenv()
 
 # Initialize the Google Gemini model
 llm = ChatGoogleGenerativeAI(
@@ -13,6 +19,9 @@ llm = ChatGoogleGenerativeAI(
     timeout=None,
     max_retries=2,
 )
+
+# Initialize the chat message history
+history = ChatMessageHistory()
 
 # Parser for output
 parser = StrOutputParser()
@@ -123,7 +132,7 @@ backend_env_chain = LLMChain(
 )
 
 # FastAPI app setup
-# app = FastAPI(title="Langchain Server", version="1.0", description="A simple API server using Langchain runnable interfaces")
+app = FastAPI(title="Langchain Server", version="1.0", description="A simple API server using Langchain runnable interfaces")
 
 def main():
     while True:
@@ -134,8 +143,15 @@ def main():
 
         if website_name:
             try:
+                # Record the user input in chat history
+                history.add_message(HumanMessage(content=f"Please generate a frontend setup for {website_name}"))
+
                 # Generate frontend setup dynamically
                 frontend_setup_result = frontend_chain.run({"website_name": website_name})
+                
+                # Record the AI output in chat history
+                history.add_message(AIMessage(content=frontend_setup_result))
+                
                 print(f"AI (Frontend Setup): {frontend_setup_result}\n")
 
                 # Generate frontend code dynamically
@@ -151,6 +167,7 @@ def main():
                 
                 for item in frontend_code_files:
                     result_code = frontend_code_chain.run({"component_description": item["description"], "component_file": item["file"]})
+                    history.add_message(AIMessage(content=result_code))
                     print(f"AI (Frontend Code - {item['description']}): {result_code}\n")
 
                 # Ask for database and port
@@ -159,7 +176,20 @@ def main():
 
                 # Generate backend setup dynamically
                 backend_setup_result = backend_chain.run({"frontend_setup": frontend_setup_result})
+                history.add_message(AIMessage(content=backend_setup_result))
                 print(f"AI (Backend Setup): {backend_setup_result}\n")
+
+                # Generate backend code dynamically
+                backend_code_files = [
+                    {"description": "main server file", "file": "server.js"},
+                    {"description": "user model file", "file": "models/userModel.js"},
+                    {"description": "database connection file", "file": "config/db.js"}
+                ]
+                
+                for item in backend_code_files:
+                    result_code = backend_code_chain.run({"component_description": item["description"], "component_file": item["file"]})
+                    history.add_message(AIMessage(content=result_code))
+                    print(f"AI (Backend Code - {item['description']}): {result_code}\n")
 
                 # Generate backend routes dynamically
                 routes_files = [
@@ -169,6 +199,7 @@ def main():
                 
                 for route in routes_files:
                     result_code = backend_routes_chain.run({"route_name": route["route_name"], "route_file": route["file"]})
+                    history.add_message(AIMessage(content=result_code))
                     print(f"AI (Backend Route - {route['route_name']}): {result_code}\n")
 
                 # Generate backend middleware dynamically
@@ -179,28 +210,26 @@ def main():
                 
                 for middleware in middleware_files:
                     result_code = backend_middleware_chain.run({"middleware_name": middleware["middleware_name"], "middleware_file": middleware["file"]})
+                    history.add_message(AIMessage(content=result_code))
                     print(f"AI (Backend Middleware - {middleware['middleware_name']}): {result_code}\n")
 
                 # Generate environment variables dynamically
                 env_result = backend_env_chain.run({})
+                history.add_message(AIMessage(content=env_result))
                 print(f"AI (Environment Variables - .env file): {env_result}\n")
 
             except Exception as e:
                 print(f"An error occurred: {e}")
 
+# Adding routes to the FastAPI app for dynamic frontend/backend setup
 add_routes(app, frontend_chain, path="/frontend-setup")
 add_routes(app, frontend_code_chain, path="/frontend-code-setup")
 add_routes(app, backend_chain, path="/backend-setup")
+add_routes(app, backend_code_chain, path="/backend-code-setup")
 add_routes(app, backend_routes_chain, path="/backend-route-setup")
-add_routes(app, backend_middleware_chain, path="/backend-middelware-setup")
+add_routes(app, backend_middleware_chain, path="/backend-middleware-setup")
 add_routes(app, backend_env_chain, path="/backend-env-setup")
 
-
-
-
 if __name__ == "__main__":
-    # main()
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
-
-
