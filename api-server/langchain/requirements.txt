@@ -15,4 +15,5 @@ langchain-core
 firebase_admin
 langserve
 fastapi
+gunicorn
 sse_starlette
