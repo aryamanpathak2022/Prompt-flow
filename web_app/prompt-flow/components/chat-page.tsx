@@ -95,10 +95,7 @@ export function ChatPageComponent() {
     if (input.trim()) {
       setMessages([...messages, { role: 'user', content: input }])
       setInput('')
-<<<<<<< HEAD
-=======
       setIsLoading(true)
->>>>>>> db2b911960f557b5c99e0b00211feed001cfbd54
       setTimeout(() => {
         setMessages(prev => [...prev, { role: 'assistant', content: `You said: ${input}` }])
         setIsLoading(false)
@@ -213,13 +210,12 @@ export function ChatPageComponent() {
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-<<<<<<< HEAD
         <header className="bg-gray-800 border-b border-gray-700 p-4 flex items-center">
           <Button variant="ghost" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="mr-4 text-gray-300">
             <Menu size={24} />
           </Button>
           <TypewriterEffect text="Hello! Start Developing With Prompt-Flow" />
-=======
+
         <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
           <div className="flex items-center">
             <Button variant="ghost" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="mr-4">
@@ -249,7 +245,6 @@ export function ChatPageComponent() {
               {isAwsConnected ? 'Connected' : 'Connect to Cloud'}
             </Button>
           </div>
->>>>>>> db2b911960f557b5c99e0b00211feed001cfbd54
         </header>
 
         {/* Chat Messages */}
@@ -275,14 +270,12 @@ export function ChatPageComponent() {
         {/* Input Area */}
         <div className="border-t border-gray-700 p-4 bg-gray-800">
           <div className="flex items-center">
-<<<<<<< HEAD
+
             <Button variant="outline" className="mr-2 text-gray-400">
               <Upload size={16} />
             </Button>
-            <Textarea
-=======
-            <Input
->>>>>>> db2b911960f557b5c99e0b00211feed001cfbd54
+            <Textarea>
+            <Input>
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -292,13 +285,12 @@ export function ChatPageComponent() {
                 }
               }}
               placeholder="Type your message here..."
-<<<<<<< HEAD
+
               className="flex-1 mr-2 border-gray-600 bg-gray-700 text-gray-300"
               rows={1}
-=======
+
               className="flex-1 mr-2 border-gray-300"
               style={{ color: 'black' }}
->>>>>>> db2b911960f557b5c99e0b00211feed001cfbd54
             />
             <Button onClick={handleSend} className="bg-blue-600 text-white hover:bg-blue-700">
               <Send size={16} />
