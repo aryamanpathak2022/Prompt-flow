@@ -1,8 +1,9 @@
-const express = require('express');
-const fetch = require('node-fetch'); // Use 'node-fetch' if you're using Node.js < 18
-const dotenv = require('dotenv');
-const cors = require('cors');
+import express from 'express';
+import fetch from 'node-fetch'; // For Node.js < 18
+import dotenv from 'dotenv';
+import cors from 'cors';
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
