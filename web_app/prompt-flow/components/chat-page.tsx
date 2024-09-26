@@ -1,76 +1,76 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Send, ChevronDown, Menu, Star, Trash, Github, FolderPlus, Cloud } from 'lucide-react'
-import { LoaderAnimation } from './loader-animation'
+import { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Send, ChevronDown, Menu, Star, Trash, Github, FolderPlus, Cloud } from 'lucide-react';
+import { LoaderAnimation } from './loader-animation';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
-const GITHUB_CLIENT_ID = 'Ov23liT7U9majuZ1XYCf'
-const REDIRECT_URI = 'http://localhost:3000/chat-page'
+const GITHUB_CLIENT_ID = 'Ov23liT7U9majuZ1XYCf';
+const REDIRECT_URI = 'http://localhost:3000/chat-page';
 
 const TypewriterEffect = ({ text }: { text: string }) => {
-  const [displayText, setDisplayText] = useState('')
-  const index = useRef(0)
+  const [displayText, setDisplayText] = useState('');
+  const index = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       if (index.current < text.length) {
-        setDisplayText((prev) => prev + text.charAt(index.current))
-        index.current += 1
+        setDisplayText((prev) => prev + text.charAt(index.current));
+        index.current += 1;
       } else {
-        clearInterval(timer)
+        clearInterval(timer);
       }
-    }, 100)
+    }, 100);
 
-    return () => clearInterval(timer)
-  }, [text])
+    return () => clearInterval(timer);
+  }, [text]);
 
   return (
     <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
       {displayText}
     </h2>
-  )
-}
+  );
+};
 
 export function ChatPageComponent() {
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'Hello! How can I help you with your coding project today?' },
-  ])
-  const [input, setInput] = useState('')
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-  const [savedChats, setSavedChats] = useState<{ id: number; title: string }[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [isGitHubAuthorized, setIsGitHubAuthorized] = useState(false)
-  const [isAwsConnected, setIsAwsConnected] = useState(false)
-  const [accessToken, setAccessToken] = useState<string | null>(null)
-  const [isAwsDialogOpen, setIsAwsDialogOpen] = useState(false)
+  ]);
+  const [input, setInput] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [savedChats, setSavedChats] = useState<{ id: number; title: string }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isGitHubAuthorized, setIsGitHubAuthorized] = useState(false);
+  const [isAwsConnected, setIsAwsConnected] = useState(false);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [isAwsDialogOpen, setIsAwsDialogOpen] = useState(false);
   const [awsCredentials, setAwsCredentials] = useState({
     accessKey: '',
     secretKey: '',
     instanceId: '',
-    region :'',
-  })
+    region: '',
+  });
 
   useEffect(() => {
-    const code = new URLSearchParams(window.location.search).get('code')
+    const code = new URLSearchParams(window.location.search).get('code');
     if (code) {
-      exchangeCodeForToken(code)
+      exchangeCodeForToken(code);
     }
-  const storedAuthorization = localStorage.getItem('isGitHubAuthorized');
-  if (storedAuthorization === 'true') {
-    setIsGitHubAuthorized(true);
-  }
-  }, [])
+    const storedAuthorization = localStorage.getItem('isGitHubAuthorized');
+    if (storedAuthorization === 'true') {
+      setIsGitHubAuthorized(true);
+    }
+  }, []);
 
   const exchangeCodeForToken = async (code: string) => {
     try {
@@ -80,56 +80,56 @@ export function ChatPageComponent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ code }),
-      })
-      const data = await response.json()
+      });
+      const data = await response.json();
       if (data.access_token) {
-        setAccessToken(data.access_token)
-        setIsGitHubAuthorized(true)
+        setAccessToken(data.access_token);
+        setIsGitHubAuthorized(true);
       }
     } catch (error) {
-      console.error('Error exchanging code for token:', error)
+      console.error('Error exchanging code for token:', error);
     }
-  }
+  };
 
   const handleSend = () => {
     if (input.trim()) {
-      setMessages([...messages, { role: 'user', content: input }])
-      setInput('')
-      setIsLoading(true)
+      setMessages([...messages, { role: 'user', content: input }]);
+      setInput('');
+      setIsLoading(true);
       setTimeout(() => {
-        setMessages(prev => [...prev, { role: 'assistant', content: `You said: ${input}` }])
-        setIsLoading(false)
-      }, 6000)
+        setMessages((prev) => [...prev, { role: 'assistant', content: `You said: ${input}` }]);
+        setIsLoading(false);
+      }, 6000);
     }
-  }
+  };
 
   const handleSaveChat = () => {
     const newSavedChat = {
       id: Date.now(),
       title: `Chat ${savedChats.length + 1}`,
-    }
-    setSavedChats([...savedChats, newSavedChat])
-  }
+    };
+    setSavedChats([...savedChats, newSavedChat]);
+  };
 
   const handleDeleteChat = (id: number) => {
-    setSavedChats(savedChats.filter(chat => chat.id !== id))
-  }
+    setSavedChats(savedChats.filter((chat) => chat.id !== id));
+  };
 
   const handleConnectToGitHub = () => {
     setIsGitHubAuthorized(true);
     localStorage.setItem('isGitHubAuthorized', 'true');
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=repo`
-    window.location.href = githubAuthUrl
-  }
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=repo`;
+    window.location.href = githubAuthUrl;
+  };
 
   const handleCreateRepo = async () => {
-    if (!accessToken) return
+    if (!accessToken) return;
 
     try {
       const response = await fetch('https://api.github.com/user/repos', {
         method: 'POST',
         headers: {
-          'Authorization': `token ${accessToken}`,
+          Authorization: `token ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -137,49 +137,48 @@ export function ChatPageComponent() {
           description: 'Repository created from ChatBot',
           private: false,
         }),
-      })
+      });
 
       if (response.ok) {
-        const repo = await response.json()
-        await createFile(repo.full_name, 'README.md', '# My New Repository\n\nThis repository was created using ChatBot.')
-        alert('Repository created successfully!')
+        const repo = await response.json();
+        await createFile(repo.full_name, 'README.md', '# My New Repository\n\nThis repository was created using ChatBot.');
+        alert('Repository created successfully!');
       } else {
-        throw new Error('Failed to create repository')
+        throw new Error('Failed to create repository');
       }
     } catch (error) {
-      console.error('Error creating repository:', error)
-      alert('Failed to create repository. Please try again.')
+      console.error('Error creating repository:', error);
+      alert('Failed to create repository. Please try again.');
     }
-  }
+  };
 
   const createFile = async (repoFullName: string, path: string, content: string) => {
     try {
       await fetch(`https://api.github.com/repos/${repoFullName}/contents/${path}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `token ${accessToken}`,
+          Authorization: `token ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           message: 'Create README.md',
           content: btoa(content),
         }),
-      })
+      });
     } catch (error) {
-      console.error('Error creating file:', error)
+      console.error('Error creating file:', error);
     }
-  }
+  };
 
   const handleAwsConnect = () => {
-    setIsAwsDialogOpen(true)
-  }
+    setIsAwsDialogOpen(true);
+  };
 
   const handleAwsSubmit = () => {
-    // Here you would typically validate and store the AWS credentials
-    console.log('AWS Credentials:', awsCredentials)
-    setIsAwsConnected(true)
-    setIsAwsDialogOpen(false)
-  }
+    console.log('AWS Credentials:', awsCredentials);
+    setIsAwsConnected(true);
+    setIsAwsDialogOpen(false);
+  };
 
   return (
     <div className="flex h-screen bg-gray-900 text-gray-300 font-sans">
@@ -192,7 +191,7 @@ export function ChatPageComponent() {
         </div>
         <ScrollArea className="h-[calc(100vh-80px)]">
           <div className="p-2">
-            {savedChats.map(chat => (
+            {savedChats.map((chat) => (
               <div key={chat.id} className="flex items-center justify-between mb-2">
                 <Button variant="ghost" className="w-full justify-start text-left text-gray-300 hover:bg-gray-700">
                   <Star className="w-4 h-4 mr-2 text-yellow-500" />
@@ -215,47 +214,13 @@ export function ChatPageComponent() {
             <Menu size={24} />
           </Button>
           <TypewriterEffect text="Hello! Start Developing With Prompt-Flow" />
-
-        <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-          <div className="flex items-center">
-            <Button variant="ghost" onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="mr-4">
-              <Menu size={24} />
-            </Button>
-            <TypewriterEffect text="Hello! Start Developing With Prompt-Flow" />
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button 
-              onClick={handleConnectToGitHub} 
-              className={`${isGitHubAuthorized ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-800 hover:bg-gray-700'} text-white`}
-            >
-              <Github className="mr-2 h-4 w-4" />
-              {isGitHubAuthorized ? 'Connected' : 'Connect to GitHub'}
-            </Button>
-            {isGitHubAuthorized && (
-              <Button onClick={handleCreateRepo} className="bg-blue-500 text-white hover:bg-blue-600">
-                <FolderPlus className="mr-2 h-4 w-4" />
-                Create Repository
-              </Button>
-            )}
-            <Button 
-              onClick={handleAwsConnect} 
-              className={`${isAwsConnected ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600'} text-white`}
-            >
-              <Cloud className="mr-2 h-4 w-4" />
-              {isAwsConnected ? 'Connected' : 'Connect to Cloud'}
-            </Button>
-          </div>
         </header>
 
         {/* Chat Messages */}
         <ScrollArea className="flex-1 p-4">
           {messages.map((message, index) => (
             <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block p-3 rounded-lg ${
-                message.role === 'user' 
-                  ? 'bg-blue-600 text-white' 
-                  : 'bg-gray-800 border border-gray-700 text-gray-300'
-              }`}>
+              <div className={`inline-block p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-800 border border-gray-700 text-gray-300'}`}>
                 {message.content}
               </div>
               {message.role === 'user' && index === messages.length - 1 && isLoading && (
@@ -267,96 +232,69 @@ export function ChatPageComponent() {
           ))}
         </ScrollArea>
 
-        {/* Input Area */}
-        <div className="border-t border-gray-700 p-4 bg-gray-800">
-          <div className="flex items-center">
-
-            <Button variant="outline" className="mr-2 text-gray-400">
-              <Upload size={16} />
-            </Button>
-            <Textarea>
-            <Input>
+        {/* Input Box */}
+        <footer className="p-4 bg-gray-800 border-t border-gray-700">
+          <div className="flex items-center space-x-4">
+            <Input
+              placeholder="Type your message here..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSend()
-                }
-              }}
-              placeholder="Type your message here..."
-
-              className="flex-1 mr-2 border-gray-600 bg-gray-700 text-gray-300"
-              rows={1}
-
-              className="flex-1 mr-2 border-gray-300"
-              style={{ color: 'black' }}
+              className="flex-1 bg-gray-700 text-gray-300 border-none"
             />
-            <Button onClick={handleSend} className="bg-blue-600 text-white hover:bg-blue-700">
-              <Send size={16} />
+            <Button onClick={handleSend} disabled={!input.trim()} className="bg-blue-600 text-white hover:bg-blue-700">
+              <Send className="w-5 h-5" />
             </Button>
           </div>
-        </div>
+        </footer>
       </div>
 
-      {/* AWS Credentials Dialog */}
+      {/* AWS Dialog */}
       <Dialog open={isAwsDialogOpen} onOpenChange={setIsAwsDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Connect to AWS</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="accessKey" className="text-right">
-                Access Key
-              </Label>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="accessKey">Access Key</Label>
               <Input
                 id="accessKey"
                 value={awsCredentials.accessKey}
                 onChange={(e) => setAwsCredentials({ ...awsCredentials, accessKey: e.target.value })}
-                className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="secretKey" className="text-right">
-                Secret Key
-              </Label>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="secretKey">Secret Key</Label>
               <Input
                 id="secretKey"
-                type="password"
                 value={awsCredentials.secretKey}
                 onChange={(e) => setAwsCredentials({ ...awsCredentials, secretKey: e.target.value })}
-                className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="instanceId" className="text-right">
-                Instance ID
-              </Label>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="instanceId">Instance ID</Label>
               <Input
                 id="instanceId"
                 value={awsCredentials.instanceId}
                 onChange={(e) => setAwsCredentials({ ...awsCredentials, instanceId: e.target.value })}
-                className="col-span-3"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="instanceId" className="text-right">
-                Region
-              </Label>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="region">Region</Label>
               <Input
-                id="instanceId"
-                value={awsCredentials.instanceId}
-                onChange={(e) => setAwsCredentials({ ...awsCredentials, instanceId: e.target.value })}
-                className="col-span-3"
+                id="region"
+                value={awsCredentials.region}
+                onChange={(e) => setAwsCredentials({ ...awsCredentials, region: e.target.value })}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleAwsSubmit}>Submit</Button>
+            <Button onClick={handleAwsSubmit} className="bg-green-600 text-white hover:bg-green-700">
+              Connect to AWS
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
