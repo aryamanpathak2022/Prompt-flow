@@ -22,7 +22,7 @@
 
 
 ## Our Chat Bot
-[![image](https://i.postimg.cc/g0qTcRbK/image.png)
+![image]([image.png](https://postimg.cc/cKCmXvHK))
 
 
 ## Technologies Used
