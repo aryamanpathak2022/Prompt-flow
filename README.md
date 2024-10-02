@@ -21,9 +21,6 @@
 
 
 
-## Our Chat Bot
-![image]([image.png](https://postimg.cc/cKCmXvHK))
-
 
 ## Technologies Used
 - LangChain
