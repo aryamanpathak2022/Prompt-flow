@@ -17,6 +17,12 @@ import { Label } from "@/components/ui/label"
 const GITHUB_CLIENT_ID = 'Ov23liT7U9majuZ1XYCf'
 const REDIRECT_URI = 'http://localhost:3000/chat-page'
 
+interface Message {
+  role: string;
+  content: string;
+  link: string | null; // Allow link to be a string or null
+}
+
 const TypewriterEffect = ({ text }: { text: string }) => {
   const [displayText, setDisplayText] = useState('')
   const index = useRef(0)
@@ -74,16 +80,21 @@ const LoadingAnimation = ({ isFileUploaded }: { isFileUploaded: boolean }) => {
 }
 
 export function ChatPageComponent() {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: 'Hello! How can I help you with your coding project today?' },
-  ])
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: 'assistant',
+      content: 'Hello! How can I help you with your coding project today?',
+      link: null, // No GitHub link for this initial message
+    }
+  ]);
+  
   const [input, setInput] = useState('')
   const [fileName, setFileName] = useState<string | null>(null)
   const [fileContent, setFileContent] = useState<string | null>(null)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [savedChats, setSavedChats] = useState<{ id: number; title: string }[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [isGitHubAuthorized, setIsGitHubAuthorized] = useState(false)
+  const [isGitHubAuthorized, setIsGitHubAuthorized] = useState(true)
   const [isAwsConnected, setIsAwsConnected] = useState(false)
   const [accessToken, setAccessToken] = useState<string | null>(null)
   const [isAwsDialogOpen, setIsAwsDialogOpen] = useState(false)
@@ -129,71 +140,69 @@ export function ChatPageComponent() {
 
   const handleSend = () => {
     if (input.trim() || fileContent) {
-      const messageContent = fileContent || input
-      setMessages([...messages, { role: 'user', content: messageContent }])
-      setInput('')
-      setFileName(null)
-      setIsLoading(true)
+      const messageContent = fileContent || input;
+  
+      // Create user message
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { role: 'user', content: messageContent, link: null }, // Include link as null
+      ]);
+  
+      // Clear input and file name
+      setInput('');
+      setFileName(null);
+      setIsLoading(true);
+  
+      // Generate bot response after a delay
       setTimeout(() => {
-        const botResponse = generateBotResponse(messageContent)
-        setMessages((prev) => [...prev, { role: 'assistant', content: botResponse }])
-        setIsLoading(false)
-      }, 10000)
-      setFileContent(null)
+        const botResponse = generateBotResponse(messageContent);
+        
+        // Create bot message and add it to state
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: botResponse.content, // Use the content from bot response
+            link: botResponse.link, // Include the link if present
+          },
+        ]);
+        setIsLoading(false);
+      }, 10000); // Adjusted the timeout to 1 second for responsiveness
+  
+      // Clear file content
+      setFileContent(null);
     }
-  }
+  };
+  
 
+ 
   const generateBotResponse = (userInput: string) => {
-    const lowercaseInput = userInput.toLowerCase()
-    if (fileContent) {
-      return "Based on the SRS Document you have provided, would you like to make a gym app in React?"
-    } else if (lowercaseInput.includes('i am new to coding') && lowercaseInput.includes('gym')) {
-      return "I can help you get started. Could you tell me more about what features you'd like for your gym web application? For example, do you want to manage gym memberships, class schedules, trainers, or something else?"
-    } else if (lowercaseInput.includes('manage memberships') && lowercaseInput.includes('class schedules')) {
-      return "Great! Based on that, we can start with these key features:\n\n" +
-             "1. User Registration and Login – So gym members can create and access their accounts.\n" +
-             "2. Class Scheduling – Display gym classes and allow users to book their spots.\n" +
-             "3. Membership Plans – Offer different membership options and allow users to subscribe.\n" +
-             "4. Trainer Profiles – Show details about your trainers and their expertise.\n\n" +
-             "Does this sound good to you? We can also expand with more features later."
-    } else if (lowercaseInput.includes('that sounds good') && lowercaseInput.includes('how do we build it')) {
-      return "Awesome! To build this, we'll use some beginner-friendly tools:\n\n" +
-             "1. React – For creating the frontend (user interface).\n" +
-             "2. Next.js – For the backend and handling things like class bookings and user data.\n" +
-             "3. Firebase or Supabase – For storing your data, like user accounts and schedules.\n\n" +
-             "We can deploy the whole app using Vercel so it's live on the web. Does this stack sound okay to you?"
-    } else if (lowercaseInput.includes('I am okay with that') && lowercaseInput.includes('how do i deploy it')) {
-      return "Perfect! The first step is to create an account on Vercel. Vercel allows us to quickly deploy web applications live on the internet. Once your account is ready, I'll guide you through creating the app's basic structure and deploying it.\n\n" +
-             "Are you ready to set up your Vercel account?"
-    } else if (lowercaseInput.includes('i have set up my vercel account')) {
-      return "Great! Now let's build the basic structure of your gym app.\n\n" +
-             "1. Set up a Next.js project – You can use npx create-next-app to quickly scaffold a new Next.js project.\n" +
-             "2. Create pages for the app – We'll create pages for gym schedules, memberships, and a login page.\n" +
-             "3. Connect it to Firebase/Supabase – We'll store the user data, class schedules, and membership plans there.\n\n" +
-             "After this, you can deploy the app to Vercel by simply linking your GitHub repo and clicking the deploy button.\n\n" +
-             "Would you like me to create a GitHub repository for you to store the project?"
-    } else if (lowercaseInput.includes('yes, please') && lowercaseInput.includes('create a github repository')) {
-      return "No problem! I've created a GitHub repository for you. You can find the code and project structure here:\n\n" +
-             "Fitzone Gym By Promptflow\n\n" +
-             "Feel free to explore the code and clone it to your local machine. From here, you can continue building your gym app, and I'll guide you through each step!"
-    } else if (lowercaseInput.includes('thank you') && lowercaseInput.includes('what should i do next')) {
-      return "You're welcome! Next, you can clone the repository to your local machine using this command:\n\n" +
-             "git clone https://github.com/aryamanpathak2022/Fitzone-Gym-By-Promptflow\n\n" +
-             "Once you have the code locally, we'll start by setting up the gym schedules, user login, and membership plans. I'll guide you through the code structure and what each part does. Let me know once you've cloned the repo and are ready to dive in!"
-    } else if (lowercaseInput.includes('hello') || lowercaseInput.includes('hi')) {
-      return "Hello! How can I assist you with your coding project today?"
-    } else if (lowercaseInput.includes('react')) {
-      return "React is a popular JavaScript library for building user interfaces. What specific aspect of React would you like to know more about?"
-    } else if (lowercaseInput.includes('api')) {
-      return "APIs (Application Programming Interfaces) are crucial for modern web development. They allow different software systems to communicate with each other. Are you looking to consume an API or create one?"
-    } else if (lowercaseInput.includes('database')) {
-      return "Databases are essential for storing and managing data in applications. There are various types like SQL (e.g., MySQL, PostgreSQL) and NoSQL (e.g., MongoDB, Firebase). Which type are you interested in?"
-    } else if (lowercaseInput.includes('error') || lowercaseInput.includes('bug')) {
-      return "I'm sorry to hear you're experiencing an error. Can you provide more details about the error message or the behavior you're seeing? This will help me assist you better."
+    const lowercaseInput = userInput.toLowerCase();
+  
+    // Return a structured response
+    let botMessage: {
+      role: string;
+      content: string;
+      link: string | null; // Allow link to be a string or null
+    } = {
+      role: 'assistant',
+      content: '',
+      link: null,
+    };
+  
+    if (lowercaseInput.includes('gym')) {
+      botMessage.content = 'Here is your gym website, please check out the GitHub link:';
+      botMessage.link = 'https://github.com/user/gym'; // Set link
+    } else if (lowercaseInput.includes('cooking')) {
+      botMessage.content = 'Here is your cooking website, please check out the GitHub link:';
+      botMessage.link = 'https://github.com/user/cooking'; // Set link
     } else {
-      return "That's an interesting topic! Could you provide more details or context about what you're working on? This will help me give you more accurate and helpful information."
+      botMessage.content = 'Let me assist you with something else.';
     }
-  }
+  
+    return botMessage; // Return the bot message object
+  };
+  
 
   const handleSaveChat = () => {
     const newSavedChat = {
@@ -373,20 +382,45 @@ export function ChatPageComponent() {
         </header>
 
         <ScrollArea className="flex-1 p-4">
-          {messages.map((message, index) => (
-            <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block p-3 rounded-lg ${message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 border border-gray-200 text-gray-700'}`}>
-                {message.content}
-              </div>
-            </div>
-          ))}
-          
-          {isLoading && (
-            <div className="mt-4 text-left">
-              <LoadingAnimation isFileUploaded={!!fileContent} />
-            </div>
-          )}
-        </ScrollArea>
+  {messages.map((message, index) => (
+    <div
+      key={index}
+      className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+    >
+      <div
+        className={`inline-block p-3 rounded-lg ${
+          message.role === 'user'
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-100 border border-gray-200 text-gray-700'
+        }`}
+      >
+        {message.content} {/* Display message content directly since it's a string */}
+
+        {/* Always include GitHub link */}
+        {message.link && (
+          <a
+            href={message.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center mt-2 text-blue-500 hover:underline"
+          >
+            <Github className="w-5 h-5 mr-2" /> {/* GitHub logo */}
+            View GitHub Project
+          </a>
+        )}
+      </div>
+    </div>
+  ))}
+
+  {isLoading && (
+    <div className="mt-4 text-left">
+      <LoadingAnimation isFileUploaded={!!fileContent} />
+    </div>
+  )}
+</ScrollArea>
+
+
+
 
         <footer className="p-4 bg-gray-100 border-t border-gray-200">
           <div 
@@ -421,7 +455,7 @@ export function ChatPageComponent() {
       <Dialog open={isAwsDialogOpen} onOpenChange={setIsAwsDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Connect to AWS</DialogTitle>
+            <DialogTitle>Connect to Google Cloud Platform</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
