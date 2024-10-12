@@ -138,71 +138,79 @@ export function ChatPageComponent() {
     }
   }
 
-  const handleSend = () => {
-    if (input.trim() || fileContent) {
-      const messageContent = fileContent || input;
-  
-      // Create user message
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: 'user', content: messageContent, link: null }, // Include link as null
-      ]);
-  
-      // Clear input and file name
-      setInput('');
-      setFileName(null);
-      setIsLoading(true);
-  
-      // Generate bot response after a delay
-      setTimeout(() => {
-        const botResponse = generateBotResponse(messageContent);
-        
-        // Create bot message and add it to state
-        setMessages((prev) => [
-          ...prev,
-          {
-            role: 'assistant',
-            content: botResponse.content, // Use the content from bot response
-            link: botResponse.link, // Include the link if present
-          },
-        ]);
-        setIsLoading(false);
-      }, 10000); // Adjusted the timeout to 1 second for responsiveness
-  
-      // Clear file content
-      setFileContent(null);
-    }
-  };
-  
+ const handleSend = () => {
+  if (input.trim() || fileContent) {
+    const messageContent = fileContent || input;
 
- 
-  const generateBotResponse = (userInput: string) => {
-    const lowercaseInput = userInput.toLowerCase();
-  
-    // Return a structured response
-    let botMessage: {
-      role: string;
-      content: string;
-      link: string | null; // Allow link to be a string or null
-    } = {
-      role: 'assistant',
-      content: '',
-      link: null,
-    };
-  
-    if (lowercaseInput.includes('gym')) {
-      botMessage.content = 'Here is your gym website, please check out the GitHub link:';
-      botMessage.link = 'https://github.com/user/gym'; // Set link
-    } else if (lowercaseInput.includes('cooking')) {
-      botMessage.content = 'Here is your cooking website, please check out the GitHub link:';
-      botMessage.link = 'https://github.com/user/cooking'; // Set link
-    } else {
-      botMessage.content = 'Let me assist you with something else.';
-    }
-  
-    return botMessage; // Return the bot message object
+    // Create user message
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: 'user', content: messageContent, link: null }, // Include link as null
+    ]);
+
+    // Clear input and file name
+    setInput('');
+    setFileName(null);
+    setIsLoading(true);
+
+    // Generate bot response after a variable delay
+    const { botResponse, delay } = generateBotResponse(messageContent);
+    
+    // Use the dynamic delay for the bot's response
+    setTimeout(() => {
+      // Create bot message and add it to state
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: botResponse.content, // Use the content from bot response
+          link: botResponse.link, // Include the link if present
+        },
+      ]);
+      setIsLoading(false);
+    }, delay); // Use the delay returned by the bot response
+
+    // Clear file content
+    setFileContent(null);
+  }
+};
+
+const generateBotResponse = (userInput: string) => {
+  const lowercaseInput = userInput.toLowerCase();
+
+  // Initialize a structured response
+  let botMessage: {
+    role: string;
+    content: string;
+    link: string | null; // Allow link to be a string or null
+  } = {
+    role: 'assistant',
+    content: '',
+    link: null,
   };
-  
+  // Define default delay (e.g., 1 second)
+  let delay = 1000;
+
+  // Custom responses and delay times
+  if (lowercaseInput.includes('gym')) {
+    botMessage.content = 'Here is your gym website, please check out the GitHub link:';
+    botMessage.link = 'https://github.com/user/gym'; // Set link
+    delay = 10000; // 10 seconds delay for gym
+
+  } else if (lowercaseInput.includes('cooking')) {
+    botMessage.content = "Your cooking website is ready! You can review the code and deploy it from the following GitHub link:";
+    botMessage.link = "https://github.com/user/cooking"; // Set link
+    
+    delay = 5000; // 5 seconds delay for cooking
+
+  } else {
+    botMessage.content = 'Let me assist you with something else.';
+    delay = 1000; // 1 second delay for other responses
+  }
+
+  return { botResponse: botMessage, delay }; // Return both the bot message and the delay
+};
+
 
   const handleSaveChat = () => {
     const newSavedChat = {
