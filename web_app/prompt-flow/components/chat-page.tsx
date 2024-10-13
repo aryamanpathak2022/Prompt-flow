@@ -21,6 +21,7 @@ interface Message {
   role: string;
   content: string;
   link: string | null; // Allow link to be a string or null
+  deployed?: string; // Optional deployed link
 }
 
 const TypewriterEffect = ({ text }: { text: string }) => {
@@ -165,6 +166,7 @@ export function ChatPageComponent() {
           role: 'assistant',
           content: botResponse.content, // Use the content from bot response
           link: botResponse.link, // Include the link if present
+          deployed: botResponse.deployed, // Include deployed link if present
         },
       ]);
       setIsLoading(false);
@@ -183,6 +185,7 @@ const generateBotResponse = (userInput: string) => {
     role: string;
     content: string;
     link: string | null; // Allow link to be a string or null
+    deployed?: string; // Optional deployed link
   } = {
     role: 'assistant',
     content: '',
@@ -193,23 +196,27 @@ const generateBotResponse = (userInput: string) => {
 
   // Custom responses and delay times
   if (lowercaseInput.includes('gym')) {
-    botMessage.content = 'Here is your gym website, please check out the GitHub link:';
-    botMessage.link = 'https://github.com/user/gym'; // Set link
-    delay = 10000; // 10 seconds delay for gym
+    botMessage.content = 'Awesome! I see you’re interested in the gym. Here’s your dedicated gym website. Feel free to check it out on GitHub:';
+    botMessage.link = 'https://github.com/aryamanpathak2022/Fitzone-Gym-By-Promptflow'; // GitHub link
+    botMessage.deployed = 'http://54.158.160.53:3000/'; // Deployed link
+    delay = 20; // 10 seconds delay for gym
 
-  } else if (lowercaseInput.includes('cooking')) {
-    botMessage.content = "Your cooking website is ready! You can review the code and deploy it from the following GitHub link:";
-    botMessage.link = "https://github.com/user/cooking"; // Set link
-    
-    delay = 5000; // 5 seconds delay for cooking
+} else if (lowercaseInput.includes('cooking')) {
+    botMessage.content = "Great choice! Your cooking website is all set. You can review the code and deploy it using the link below:";
+    botMessage.link = "https://github.com/aryamanpathak2022/Saapna-s-Kitchen-By-PromptFlow"; // GitHub link
+    botMessage.deployed = "http://54.236.114.182:3000/"; // Deployed link
+    delay = 20000; // 5 seconds delay for cooking
 
-  } else {
-    botMessage.content = 'Let me assist you with something else.';
+} else {
+    botMessage.content = 'No problem! Please share your Software Requirement Specification Document, and I’ll help you create a GitHub repository and deployment based on that.';
+
     delay = 1000; // 1 second delay for other responses
-  }
+}
 
-  return { botResponse: botMessage, delay }; // Return both the bot message and the delay
-};
+return { botResponse: botMessage, delay }; // Return both the bot message and the delay
+
+}
+
 
 
   const handleSaveChat = () => {
@@ -390,35 +397,50 @@ const generateBotResponse = (userInput: string) => {
         </header>
 
         <ScrollArea className="flex-1 p-4">
-  {messages.map((message, index) => (
+        {messages.map((message, index) => (
+  <div
+    key={index}
+    className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+  >
     <div
-      key={index}
-      className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+      className={`inline-block p-3 rounded-lg ${
+        message.role === 'user'
+          ? 'bg-blue-600 text-white'
+          : 'bg-gray-100 border border-gray-200 text-gray-700'
+      }`}
     >
-      <div
-        className={`inline-block p-3 rounded-lg ${
-          message.role === 'user'
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-100 border border-gray-200 text-gray-700'
-        }`}
-      >
-        {message.content} {/* Display message content directly since it's a string */}
+      {/* Display message content */}
+      {message.content}
 
-        {/* Always include GitHub link */}
-        {message.link && (
-          <a
-            href={message.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center mt-2 text-blue-500 hover:underline"
-          >
-            <Github className="w-5 h-5 mr-2" /> {/* GitHub logo */}
-            View GitHub Project
-          </a>
-        )}
-      </div>
+      {/* GitHub link (always shown if available) */}
+      {message.link && (
+        <a
+          href={message.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center mt-2 text-blue-500 hover:underline"
+        >
+          <Github className="w-5 h-5 mr-2" />
+          View GitHub Project
+        </a>
+      )}
+
+      {/* Deployed link (conditionally shown if available) */}
+      {message.deployed && (
+        <a
+          href={message.deployed}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center mt-2 text-blue-500 hover:underline"
+        >
+          <Cloud className="w-5 h-5 mr-2" />
+          View Deployed Project
+        </a>
+      )}
     </div>
-  ))}
+  </div>
+))}
+
 
   {isLoading && (
     <div className="mt-4 text-left">
