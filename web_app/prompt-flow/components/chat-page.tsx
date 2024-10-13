@@ -199,7 +199,7 @@ const generateBotResponse = (userInput: string) => {
     botMessage.content = 'Awesome! I see you’re interested in the gym. Here’s your dedicated gym website. Feel free to check it out on GitHub:';
     botMessage.link = 'https://github.com/aryamanpathak2022/Fitzone-Gym-By-Promptflow'; // GitHub link
     botMessage.deployed = 'http://54.158.160.53:3000/'; // Deployed link
-    delay = 20; // 10 seconds delay for gym
+    delay = 20000; // 10 seconds delay for gym
 
 } else if (lowercaseInput.includes('cooking')) {
     botMessage.content = "Great choice! Your cooking website is all set. You can review the code and deploy it using the link below:";
