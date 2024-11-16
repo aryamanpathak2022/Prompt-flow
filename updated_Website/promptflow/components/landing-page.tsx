@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Code, Zap, Cloud, Cog, Box, Check, Phone, Mail, MessageCircle, Instagram, Facebook, DollarSign, ArrowRight } from 'lucide-react'
+import { Code, Zap, Cloud, Cog, Box, Check, Phone, Mail, MessageCircle, Instagram, Facebook, DollarSign, ArrowRight, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
@@ -362,7 +362,7 @@ export function LandingPageComponent() {
   const connectIcons = [
     { icon: Phone, label: 'Call Us', href: 'tel:+1234567890' },
     { icon: Mail, label: 'Email', href: 'mailto:info@promptflow.ai' },
-    { icon: MessageCircle, label: 'Discord', href: 'https://discord.gg/promptflow' },
+    { icon: Gamepad2, label: 'Discord', href: 'https://discord.gg/promptflow' },
     { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/1234567890' },
     { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/promptflow' },
     { icon: Facebook, label: 'Facebook', href: 'https://facebook.com/promptflow' },
