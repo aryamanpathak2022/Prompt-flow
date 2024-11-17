@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import Link from 'next/link'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ChevronLeft, ChevronRight, Upload } from 'lucide-react'
-
+import Link from 'next/link'
 // Star background component
 const StarryBackground = () => {
   const [stars, setStars] = useState(() =>
@@ -54,12 +53,16 @@ export function StarryQuestionnaire() {
   const [currentStep, setCurrentStep] = useState(0)
   const [typingIndex, setTypingIndex] = useState(-1)
   const [currentText, setCurrentText] = useState('')
+  const [selectedTheme, setSelectedTheme] = useState('')
+  const [selectedGoal, setSelectedGoal] = useState('')
+  const [selectedKeywords, setSelectedKeywords] = useState<string[]>([])
+  const [selectedComponents, setSelectedComponents] = useState<string[]>([])
 
   const questions = [
     "WEBSITE NAME HERE ?",
     "CHOOSE YOUR WEBSITE THEME ?",
     "WHAT'S YOUR MAIN GOAL ?",
-    "SELECT KEY WORDS THAT DESCRIBE YOU ?",
+    "SELECT KEY WORDS THAT DESCRIBE YOU'R IDEA ?",
     "UPLOAD YOUR LOGO HERE ?",
     "CHOOSE YOUR WEBSITE COMPONENTS ?",
     "READY TO TRANSFORM YOUR IDEAS ?"
@@ -127,7 +130,11 @@ export function StarryQuestionnaire() {
           )}
 
           {currentStep === 1 && (
-            <RadioGroup className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <RadioGroup 
+              className="grid grid-cols-2 md:grid-cols-3 gap-4" 
+              value={selectedTheme} 
+              onValueChange={setSelectedTheme}
+            >
               {[
                 { name: 'Modern Dark', color: 'bg-gray-800' },
                 { name: 'Minimal Light', color: 'bg-gray-200' },
@@ -139,7 +146,7 @@ export function StarryQuestionnaire() {
                   <RadioGroupItem value={theme.name} id={theme.name} className="peer sr-only" />
                   <Label
                     htmlFor={theme.name}
-                    className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 ${theme.color} hover:scale-105 peer-checked:ring-2 peer-checked:ring-blue-500`}
+                    className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 ${theme.color} hover:scale-105 peer-checked:ring-2 peer-checked:ring-blue-500 ${selectedTheme === theme.name ? 'ring-2 ring-blue-500 scale-105' : ''}`}
                   >
                     <span className={`text-sm font-semibold ${theme.color === 'bg-gray-200' ? 'text-black' : 'text-white'}`}>
                       {theme.name}
@@ -151,13 +158,17 @@ export function StarryQuestionnaire() {
           )}
 
           {currentStep === 2 && (
-            <RadioGroup className="space-y-3">
+            <RadioGroup 
+              className="space-y-3" 
+              value={selectedGoal} 
+              onValueChange={setSelectedGoal}
+            >
               {['Increase Sales', 'Brand Awareness', 'Generate Leads', 'Provide Info', 'Show Portfolio'].map((goal, index) => (
                 <div key={goal} className="relative">
                   <RadioGroupItem value={goal} id={goal} className="peer sr-only" />
                   <Label
                     htmlFor={goal}
-                    className="flex items-center space-x-3 p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-900 peer-checked:border-blue-500"
+                    className={`flex items-center space-x-3 p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-900 peer-checked:border-blue-500 ${selectedGoal === goal ? 'bg-blue-900 border-blue-500' : ''}`}
                   >
                     <span className="text-2xl">{['💰', '🌟', '🎯', 'ℹ️', '🖼️'][index]}</span>
                     <span className="text-lg">{goal}</span>
@@ -171,10 +182,21 @@ export function StarryQuestionnaire() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {['Innovative', 'Professional', 'Creative', 'Reliable', 'Sustainable', 'Luxurious', 'Modern', 'Traditional'].map((keyword) => (
                 <div key={keyword} className="relative">
-                  <Checkbox id={keyword} className="peer sr-only" />
+                  <Checkbox 
+                    id={keyword} 
+                    className="peer sr-only" 
+                    checked={selectedKeywords.includes(keyword)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedKeywords(prev => [...prev, keyword])
+                      } else {
+                        setSelectedKeywords(prev => prev.filter(k => k !== keyword))
+                      }
+                    }}
+                  />
                   <Label
                     htmlFor={keyword}
-                    className="flex items-center justify-center p-3 rounded-full border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-500 peer-checked:border-blue-300"
+                    className={`flex items-center justify-center p-3 rounded-full border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-500 peer-checked:border-blue-300 ${selectedKeywords.includes(keyword) ? 'bg-blue-500 border-blue-300' : ''}`}
                   >
                     {keyword}
                   </Label>
@@ -200,10 +222,21 @@ export function StarryQuestionnaire() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {['Hero', 'About', 'Services', 'Portfolio', 'Testimonials', 'Blog', 'Contact', 'Newsletter'].map((component) => (
                 <div key={component} className="relative">
-                  <Checkbox id={component} className="peer sr-only" />
+                  <Checkbox 
+                    id={component} 
+                    className="peer sr-only"
+                    checked={selectedComponents.includes(component)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedComponents(prev => [...prev, component])
+                      } else {
+                        setSelectedComponents(prev => prev.filter(c => c !== component))
+                      }
+                    }}
+                  />
                   <Label
                     htmlFor={component}
-                    className="flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-900 peer-checked:border-blue-500"
+                    className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-800 peer-checked:bg-blue-900 peer-checked:border-blue-500 ${selectedComponents.includes(component) ? 'bg-blue-900 border-blue-500' : ''}`}
                   >
                     <span className="text-2xl mb-2">{['🦸', 'ℹ️', '🛠️', '🖼️', '💬', '📝', '📞', '📧'][['Hero', 'About', 'Services', 'Portfolio', 'Testimonials', 'Blog', 'Contact', 'Newsletter'].indexOf(component)]}</span>
                     <span className="text-sm">{component}</span>
@@ -214,7 +247,7 @@ export function StarryQuestionnaire() {
           )}
 
           {currentStep === 6 && (
-            <Link href='\plan3'>
+            <Link href='/plan4'>
             <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-6 rounded-lg text-xl font-bold transition-all duration-300 transform hover:scale-105">
               Let's Transform Your Ideas!
             </Button>
