@@ -1,6 +1,6 @@
-import {PromptFlowUpload} from "@/components/prompt-flow-upload"
+import {DocumentUploadComponent} from "@/components/document-upload"
 
 export default function Page() {
 //   return <LandingPageComponent />
-  return <PromptFlowUpload/>
+  return <DocumentUploadComponent/>
 }
