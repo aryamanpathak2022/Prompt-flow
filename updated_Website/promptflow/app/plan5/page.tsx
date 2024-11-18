@@ -1,6 +1,6 @@
-import {GalaxyChatPage} from "@/components/galaxy-chat-page"
+import {ChatInterface} from "@/components/chat-interface"
 
 export default function Page() {
 //   return <LandingPageComponent />
-  return <GalaxyChatPage/>
+  return <ChatInterface/>
 }

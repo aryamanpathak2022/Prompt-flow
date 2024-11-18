@@ -398,16 +398,16 @@ export function WebsiteBuilder() {
             )}
           </Droppable>
           <div className="absolute bottom-16 right-6 flex flex-col gap-4">
+            <Link href="/plan5">
             <Button className="bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 rounded-full px-6">
               <MessageSquare className="mr-2 h-4 w-4" />
               Chat with PromptFlow
             </Button>
-            <Link href="/plan4">
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 rounded-full px-6">
+            </Link>
+            {/* <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 rounded-full px-6">
               <Upload className="mr-2 h-4 w-4" />
               Upload SRS
-            </Button>
-            </Link>
+            </Button> */}
           </div>
           <div className="flex items-center gap-4">
             <Button size="icon" variant="ghost">

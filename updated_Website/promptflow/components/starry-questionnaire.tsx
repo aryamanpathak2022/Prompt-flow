@@ -247,7 +247,7 @@ export function StarryQuestionnaire() {
           )}
 
           {currentStep === 6 && (
-            <Link href='/plan4'>
+            <Link href='/plan3'>
             <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white py-6 rounded-lg text-xl font-bold transition-all duration-300 transform hover:scale-105">
               Let's Transform Your Ideas!
             </Button>
