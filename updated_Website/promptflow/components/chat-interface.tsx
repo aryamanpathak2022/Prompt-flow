@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Upload, Menu, FileText, Send, Clock, Paperclip, FolderUp, FileUp } from 'lucide-react'
+import { Upload, Menu, FileText, Send, Clock, Paperclip, FolderUp, FileUp, Github, Cloud } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,13 +14,18 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [heroMessages, setHeroMessages] = useState<string[]>([
-    " What can PromptFlow do for you today?",
-    " Start your day with PromptFlow",
-    " SRS or No SRS, PromptFlow is always there"
+  const [heroMessages] = useState<string[]>([
+    "What can PromptFlow do for you today?",
+    "Start your day with PromptFlow",
+    "SRS or No SRS, PromptFlow is always there"
   ])
   const [currentHeroMessage, setCurrentHeroMessage] = useState('')
   const [showHeroMessage, setShowHeroMessage] = useState(true)
+  const [isGithubConnected, setIsGithubConnected] = useState(false)
+  const [isAwsConnected, setIsAwsConnected] = useState(false)
+  const [githubUsername, setGithubUsername] = useState('')
+  const [notification, setNotification] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const chatEndRef = useRef<HTMLDivElement>(null)
 
@@ -61,48 +66,67 @@ export function ChatInterface() {
     }
   }
 
+  const handleGithubConnect = () => {
+    const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
+    if (!clientId) {
+      showNotification('GitHub Client ID is not configured', 'error')
+      return
+    }
+    const redirectUri = `${window.location.origin}/api/github-callback`
+    const scope = 'read:user'
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}`
+  }
+
+  const handleAwsConnect = async () => {
+    // Simulate AWS connection process
+    setIsLoading(true)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    setIsLoading(false)
+    setIsAwsConnected(true)
+    showNotification('Connected to AWS successfully', 'success')
+  }
+
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    setNotification({ message, type })
+    setTimeout(() => setNotification(null), 3000)
+  }
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   useEffect(() => {
-    let currentIndex = 0; // Tracks the character index within the current message
-    let currentMessageIndex = 0; // Tracks which hero message is being displayed
-    let timeoutId: NodeJS.Timeout; // Stores the timeout ID to clear if necessary
-  
+    let currentIndex = 0
+    let currentMessageIndex = 0
+    let timeoutId: NodeJS.Timeout
+
     const typeHeroMessage = () => {
       if (currentMessageIndex < heroMessages.length) {
         if (currentIndex === 0) {
-          // Start fresh for each message
-          setCurrentHeroMessage('');
+          setCurrentHeroMessage('')
         }
-  
+
         if (currentIndex < heroMessages[currentMessageIndex].length) {
-          // Append the next character
-          setCurrentHeroMessage((prev) => prev + heroMessages[currentMessageIndex][currentIndex]);
-          currentIndex++;
-          timeoutId = setTimeout(typeHeroMessage, 100); // Adjust typing speed here
+          setCurrentHeroMessage((prev) => prev + heroMessages[currentMessageIndex][currentIndex])
+          currentIndex++
+          timeoutId = setTimeout(typeHeroMessage, 100)
         } else {
-          // Pause after finishing a message
           timeoutId = setTimeout(() => {
-            currentIndex = 0; // Reset character index for the next message
-            currentMessageIndex++;
-            typeHeroMessage();
-          }, 2000); // Adjust pause duration here
+            currentIndex = 0
+            currentMessageIndex++
+            typeHeroMessage()
+          }, 2000)
         }
       } else {
-        // Loop back to the start of messages
-        currentMessageIndex = 0;
-        typeHeroMessage();
+        currentMessageIndex = 0
+        typeHeroMessage()
       }
-    };
-  
-    typeHeroMessage(); // Start the typing effect
-  
-    // Cleanup to avoid memory leaks
-    return () => clearTimeout(timeoutId);
-  }, [heroMessages]);
-  
+    }
+
+    typeHeroMessage()
+
+    return () => clearTimeout(timeoutId)
+  }, [heroMessages])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -163,9 +187,45 @@ export function ChatInterface() {
     }
   }, [])
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+    if (code) {
+      // Exchange code for access token
+      fetch('/api/github-callback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.access_token) {
+          setIsGithubConnected(true)
+          setGithubUsername(data.username)
+          showNotification('Connected to GitHub successfully', 'success')
+        } else {
+          showNotification('Failed to connect to GitHub', 'error')
+        }
+      })
+      .catch(() => {
+        showNotification('Error connecting to GitHub', 'error')
+      })
+
+      // Remove the code from the URL
+      window.history.replaceState({}, document.title, window.location.pathname)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen bg-black text-gray-300 flex flex-col relative overflow-hidden">
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+      {notification && (
+        <div className={`fixed top-4 right-4 p-4 rounded-md ${
+          notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        } text-white z-50`}>
+          {notification.message}
+        </div>
+      )}
 
       {/* Header */}
       <header className="relative z-10 bg-black bg-opacity-80 backdrop-blur-sm border-b border-gray-800 p-4 flex justify-between items-center">
@@ -179,6 +239,24 @@ export function ChatInterface() {
           />
         </div>
         <nav className="flex items-center space-x-4">
+          <Button
+            onClick={handleGithubConnect}
+            className={`bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center ${
+              isGithubConnected ? 'bg-green-600 hover:bg-green-700' : ''
+            }`}
+          >
+            <Github className="w-4 h-4 mr-2" />
+            {isGithubConnected ? `Connected: ${githubUsername}` : 'Connect to GitHub'}
+          </Button>
+          <Button
+            onClick={handleAwsConnect}
+            className={`bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center ${
+              isAwsConnected ? 'bg-green-600 hover:bg-green-700' : ''
+            }`}
+          >
+            <Cloud className="w-4 h-4 mr-2" />
+            {isAwsConnected ? 'Connected to AWS' : 'Connect to AWS'}
+          </Button>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" className="text-gray-300 hover:text-white">

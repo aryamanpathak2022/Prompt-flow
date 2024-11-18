@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Code, Zap, Cloud, Cog, Box, Check, Phone, Mail, MessageCircle, Instagram, Facebook, DollarSign, ArrowRight, Gamepad2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import {CreativeHeroAnimated} from './creative-hero-animated'
 import { Button } from "@/components/ui/button"
 // import {images} from '@/constants'
 const Star = ({ delay = 0 }) => {
@@ -322,9 +321,7 @@ export function LandingPageComponent() {
     { 
       name: "Basic", 
       price: 29, 
-      
       features: [
-        "50 prompts free",
         "5 projects per month",
         "Basic code generation",
         "Community support",
@@ -336,7 +333,6 @@ export function LandingPageComponent() {
     { 
       name: "Pro", 
       price: 99, 
-      link: "/plan1",
       features: [
         "Unlimited projects",
         "Advanced code generation",
@@ -420,13 +416,12 @@ export function LandingPageComponent() {
             <p className="text-xl md:text-2xl text-white mb-12 mt-8">
               Transform your ideas into reality with our cutting-edge AI technology. PromptFlow streamlines your entire development process, from concept to deployment.
             </p>
-            <Link href="\plan1">
+
             <Button
               className="bg-white text-black px-12 py-6 rounded-full hover:bg-opacity-90 transition-opacity text-xl shadow-lg"
             >
               Get Started Free
             </Button>
-            </Link>
           </motion.div>
         </div>
       </section>
@@ -447,30 +442,19 @@ export function LandingPageComponent() {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-black">
-  <div className="container mx-auto px-4">
-    
-    <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center text-white">
-      Choose Your Plan
-    </h2>
-    
-    <div className="flex flex-col md:flex-row gap-8 max-w-full mx-auto">
-      {plans.map((plan, index) => (
-       <a
-       key={index}
-       href={plan.link || "#"} // Fallback to "#" if link is undefined
-       className="flex-1"
-       target="_blank"
-       rel="noopener noreferrer"
-     >
-       <PricingCard plan={plan} index={index} />
-     </a>
-     
-      ))}
-    </div>
-    
-  </div>
-</section>
-
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center text-white">
+            Choose Your Plan
+          </h2>
+          <div className="flex flex-col md:flex-row gap-8 max-w-full mx-auto">
+            {plans.map((plan, index) => (
+              <div key={index} className="flex-1">
+                <PricingCard plan={plan} index={index} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Connect Section */}
       <section id="connect" className="py-20 bg-black">
