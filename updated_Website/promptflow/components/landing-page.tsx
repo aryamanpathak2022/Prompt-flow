@@ -322,12 +322,14 @@ export function LandingPageComponent() {
       name: "Basic", 
       price: 29, 
       features: [
+        "50 prompts allowed",
         "5 projects per month",
         "Basic code generation",
         "Community support",
         "Standard cloud configs",
         "Basic Docker testing"
       ],
+      link:"/plan7",
       gradient: "from-blue-400 to-purple-400"
     },
     { 
@@ -341,6 +343,7 @@ export function LandingPageComponent() {
         "Advanced Docker integration",
         "Custom framework support"
       ],
+      link:"/plan6",
       gradient: "from-purple-400 to-pink-400",
       popular: true
     },
@@ -355,6 +358,7 @@ export function LandingPageComponent() {
         "On-premise deployment option",
         "Custom AI model training"
       ],
+      link:"/plan1",
       gradient: "from-pink-400 to-red-400"
     },
   ]
@@ -416,12 +420,13 @@ export function LandingPageComponent() {
             <p className="text-xl md:text-2xl text-white mb-12 mt-8">
               Transform your ideas into reality with our cutting-edge AI technology. PromptFlow streamlines your entire development process, from concept to deployment.
             </p>
-
+            <Link href='/plan1'>
             <Button
               className="bg-white text-black px-12 py-6 rounded-full hover:bg-opacity-90 transition-opacity text-xl shadow-lg"
             >
               Get Started Free
             </Button>
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -442,19 +447,24 @@ export function LandingPageComponent() {
 
       {/* Pricing Section */}
       <section id="pricing" className="py-20 bg-black">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center text-white">
-            Choose Your Plan
-          </h2>
-          <div className="flex flex-col md:flex-row gap-8 max-w-full mx-auto">
-            {plans.map((plan, index) => (
-              <div key={index} className="flex-1">
-                <PricingCard plan={plan} index={index} />
-              </div>
-            ))}
-          </div>
+  <div className="container mx-auto px-4">
+    <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center text-white">
+      Choose Your Plan
+    </h2>
+    <div className="flex flex-col md:flex-row gap-8 max-w-full mx-auto">
+      {plans.map((plan, index) => (
+        <div key={index} className="flex-1">
+          <Link href={plan.link} passHref>
+            {/* <a className="block"> */}
+              <PricingCard plan={plan} index={index} />
+            {/* </a> */}
+          </Link>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* Connect Section */}
       <section id="connect" className="py-20 bg-black">

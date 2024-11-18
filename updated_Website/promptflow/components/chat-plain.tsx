@@ -1,24 +1,22 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Upload, Menu, FileText, Send, Clock, Paperclip, FolderUp, FileUp, Github, Cloud } from 'lucide-react'
+import { Menu, Send, Clock, Github, Cloud } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from 'next/link'
-import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import Image from "next/image"
 
-export function ChatInterface() {
-  const [file, setFile] = useState<File | null>(null)
+export default function ChatInterfacePlain() {
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [heroMessages] = useState<string[]>([
     "What can PromptFlow do for you today?",
     "Start your day with PromptFlow",
-    "SRS or No SRS, PromptFlow is always there"
+    "PromptFlow is always there for you"
   ])
   const [currentHeroMessage, setCurrentHeroMessage] = useState('')
   const [showHeroMessage, setShowHeroMessage] = useState(true)
@@ -39,16 +37,6 @@ export function ChatInterface() {
     { id: 6, title: "Client Presentation Prep", date: "2024-03-27" },
   ]
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0]
-      const fileType = selectedFile.type
-      if (fileType === 'application/pdf' || fileType === 'application/msword' || fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        setFile(selectedFile)
-      }
-    }
-  }
-
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
     if (inputMessage.trim()) {
@@ -60,10 +48,7 @@ export function ChatInterface() {
       // Simulate AI response (replace with actual API call in production)
       await new Promise(resolve => setTimeout(resolve, 3000))
       setIsLoading(false)
-      setMessages(prev => [...prev, { role: 'assistant', content: file 
-        ? "I've analyzed the SRS document. What specific aspect would you like to discuss?" 
-        : "I'm here to help. What would you like assistance with today?"
-      }])
+      setMessages(prev => [...prev, { role: 'assistant', content: "I'm here to help. What would you like assistance with today?" }])
     }
   }
 
@@ -231,14 +216,14 @@ export function ChatInterface() {
       {/* Header */}
       <header className="relative z-10 bg-black bg-opacity-80 backdrop-blur-sm border-b border-gray-800 p-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <Link href='\'>
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bar0hfVz9p0aZ3pAuBXRnWB4McVmEd.png"
-            alt="PromptFlow Logo"
-            width={120}
-            height={24}
-            className="h-6 w-auto"
-          />
+          <Link href='/'>
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bar0hfVz9p0aZ3pAuBXRnWB4McVmEd.png"
+              alt="PromptFlow Logo"
+              width={120}
+              height={24}
+              className="h-6 w-auto"
+            />
           </Link>
         </div>
         <nav className="flex items-center space-x-4">
@@ -285,89 +270,44 @@ export function ChatInterface() {
 
       {/* Main content */}
       <main className="relative z-10 flex-grow flex flex-col p-4">
-        {!file ? (
-          <div className="flex-grow flex items-center justify-center">
-            <div className="bg-black bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-2xl border border-gray-800 max-w-md w-full">
-              <h1 className="text-3xl font-bold mb-6 text-center text-white">SRS Document Upload</h1>
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="srs-file" className="text-sm font-medium text-gray-300 flex items-center">
-                    <Paperclip className="w-4 h-4 mr-2" />
-                    Upload your SRS document (PDF or Word):
-                  </Label>
-                  <div className="flex items-center justify-center w-full">
-                    <Label
-                      htmlFor="srs-file"
-                      className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer bg-black hover:bg-gray-900 transition-colors duration-300"
-                    >
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="w-8 h-8 mb-3 text-gray-400" />
-                        <p className="mb-2 text-sm text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                        <p className="text-xs text-gray-500">PDF or Word document (MAX. 10MB)</p>
-                      </div>
-                      <Input id="srs-file" type="file" className="hidden" onChange={handleFileChange} accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-                    </Label>
-                  </div>
-                </div>
-                <div className="flex justify-center space-x-4">
-                  <Button onClick={() => setFile({} as File)} className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center">
-                    <FolderUp className="w-4 h-4 mr-2" />
-                    PromptFlow Chat
-                  </Button>
-                  <Button onClick={() => setFile({} as File)} className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg flex items-center">
-                    <FileUp className="w-4 h-4 mr-2" />
-                    Upload Files
-                  </Button>
+        <div className="flex-grow flex flex-col space-y-4">
+          <ScrollArea className="flex-grow bg-black bg-opacity-70 backdrop-blur-md p-4 rounded-lg shadow-2xl border border-gray-800">
+            {showHeroMessage && (
+              <div className="text-center text-2xl font-bold text-purple-400 mb-8">
+                {currentHeroMessage}
+              </div>
+            )}
+            {messages.map((message, index) => (
+              <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+                <div className={`inline-block p-3 rounded-lg ${message.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>
+                  {message.content}
                 </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          <div className="flex-grow flex flex-col space-y-4">
-            <div className="bg-black bg-opacity-70 backdrop-blur-md p-4 rounded-lg shadow-2xl border border-gray-800">
-              <div className="flex items-center space-x-2">
-                <FileText className="w-6 h-6 text-purple-400" />
-                <span className="font-medium text-gray-300">{file.name || 'No document uploaded'}</span>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start items-center space-x-2 my-4">
+                <div className="loading-dots">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
-            </div>
-            <ScrollArea className="flex-grow bg-black bg-opacity-70 backdrop-blur-md p-4 rounded-lg shadow-2xl border border-gray-800">
-              {showHeroMessage && (
-                <div className="text-center text-2xl font-bold text-purple-400 mb-8">
-                  {currentHeroMessage}
-                </div>
-              )}
-              {messages.map((message, index) => (
-                <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                  <div className={`inline-block p-3 rounded-lg ${message.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start items-center space-x-2 my-4">
-                  <div className="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </ScrollArea>
-            <form onSubmit={handleSendMessage} className="flex space-x-2">
-              <Input
-                type="text"
-                placeholder="Type your message..."
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                className="flex-grow bg-gray-800 text-white border-gray-700"
-              />
-              <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
-                <Send className="w-4 h-4" />
-              </Button>
-            </form>
-          </div>
-        )}
+            )}
+            <div ref={chatEndRef} />
+          </ScrollArea>
+          <form onSubmit={handleSendMessage} className="flex space-x-2">
+            <Input
+              type="text"
+              placeholder="Type your message..."
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              className="flex-grow bg-gray-800 text-white border-gray-700"
+            />
+            <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
+              <Send className="w-4 h-4" />
+            </Button>
+          </form>
+        </div>
       </main>
 
       {/* Footer */}
