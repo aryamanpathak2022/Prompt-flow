@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Upload, Menu, FileText, Send, Clock, Paperclip, FolderUp, FileUp, Github, Cloud } from 'lucide-react'
+import { Upload, Menu, FileText, Send, Clock, Paperclip, FolderUp, FileUp, Github, Cloud, ExternalLink } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from 'next/link'
@@ -9,10 +9,11 @@ import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import Image from "next/image"
+import { LoadingAnimation } from './LoadingAnimation'
 
 export function ChatInterface() {
   const [file, setFile] = useState<File | null>(null)
-  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([])
+  const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string; links?: { github?: string; demo?: string } }[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [heroMessages] = useState<string[]>([
@@ -49,23 +50,66 @@ export function ChatInterface() {
     }
   }
 
+  const generateBotResponse = (userInput: string) => {
+    const lowercaseInput = userInput.toLowerCase()
+
+    let botMessage: {
+      role: 'assistant'
+      content: string
+      links?: { github?: string; demo?: string }
+    } = { role: 'assistant', content: '', links: {} }
+
+    let delay = 5000
+
+    if (lowercaseInput.includes('gym')) {
+      botMessage.links = {
+        github: 'https://github.com/aryamanpathak2022/Fitzone-Gym-By-Promptflow',
+        demo: 'http://54.158.160.53:3000/'
+      }
+      botMessage.content = `🏋️‍♂️ Awesome! I see you're pumped about hitting the gym. Here's your personalized fitness hub. Get ready to flex those muscles and crush your goals! 💪
+
+Remember, every rep counts! Let's make those gains together! 🏆`
+      delay = 6000
+    } else if (lowercaseInput.includes('cooking')) {
+      botMessage.links = {
+        github: 'https://github.com/aryamanpathak2022/Saapna-s-Kitchen-By-PromptFlow',
+        demo: 'http://54.236.114.182:3000/'
+      }
+      botMessage.content = `👨‍🍳 Bon appétit! Your culinary adventure awaits. I've whipped up a delicious cooking website just for you. Time to sharpen those knives and fire up the stove! 🔪🔥
+
+Get ready to create some mouthwatering masterpieces! Let's cook up a storm! 🍳🥘`
+      delay = 6000
+    } else {
+      botMessage.content = `🤖 No problem! I'm here to help with any topic. Just share your Software Requirement Specification Document, and I'll cook up a GitHub repository and deployment faster than you can say "code"! 
+
+Need inspiration? Try asking about gym workouts or cooking recipes. I've got some special treats for those topics! 🏋️‍♂️👨‍🍳`
+      delay = 1000
+    }
+
+    return { botResponse: botMessage, delay }
+  }
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
+
     if (inputMessage.trim()) {
-      setShowHeroMessage(false)
-      setMessages(prev => [...prev, { role: 'user', content: inputMessage }])
+      const userMessage = inputMessage
+      setMessages((prev) => [...prev, { role: 'user', content: userMessage }])
       setInputMessage('')
       setIsLoading(true)
 
-      // Simulate AI response (replace with actual API call in production)
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      // Generate the bot's response
+      const { botResponse, delay } = generateBotResponse(userMessage)
+      await new Promise((resolve) => setTimeout(resolve, delay))
+
       setIsLoading(false)
-      setMessages(prev => [...prev, { role: 'assistant', content: file 
-        ? "I've analyzed the SRS document. What specific aspect would you like to discuss?" 
-        : "I'm here to help. What would you like assistance with today?"
-      }])
+      setMessages((prev) => [...prev, botResponse])
     }
   }
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, isLoading])
 
   const handleGithubConnect = () => {
     const clientId = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID
@@ -91,10 +135,6 @@ export function ChatInterface() {
     setNotification({ message, type })
     setTimeout(() => setNotification(null), 3000)
   }
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
 
   useEffect(() => {
     let currentIndex = 0
@@ -231,14 +271,14 @@ export function ChatInterface() {
       {/* Header */}
       <header className="relative z-10 bg-black bg-opacity-80 backdrop-blur-sm border-b border-gray-800 p-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <Link href='\'>
-          <Image
-            src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bar0hfVz9p0aZ3pAuBXRnWB4McVmEd.png"
-            alt="PromptFlow Logo"
-            width={120}
-            height={24}
-            className="h-6 w-auto"
-          />
+          <Link href='/'>
+            <Image
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-bar0hfVz9p0aZ3pAuBXRnWB4McVmEd.png"
+              alt="PromptFlow Logo"
+              width={120}
+              height={24}
+              className="h-6 w-auto"
+            />
           </Link>
         </div>
         <nav className="flex items-center space-x-4">
@@ -286,7 +326,8 @@ export function ChatInterface() {
       {/* Main content */}
       <main className="relative z-10 flex-grow flex flex-col p-4">
         {!file ? (
-          <div className="flex-grow flex items-center justify-center">
+          <div className="flex-
+grow flex items-center justify-center">
             <div className="bg-black bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-2xl border border-gray-800 max-w-md w-full">
               <h1 className="text-3xl font-bold mb-6 text-center text-white">SRS Document Upload</h1>
               <div className="space-y-6">
@@ -338,20 +379,48 @@ export function ChatInterface() {
               )}
               {messages.map((message, index) => (
                 <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                  <div className={`inline-block p-3 rounded-lg ${message.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>
-                    {message.content}
+                  <div 
+                    className={`inline-block p-3 rounded-lg ${
+                      message.role === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'
+                    }`}
+                  >
+                    <div>{message.content}</div>
+                    {message.links && (message.links.github || message.links.demo) && (
+                      <div className="mt-2 space-y-2">
+                        {message.links.github && (
+                          <a
+                            href={message.links.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block bg-gray-600 hover:bg-blue-500 text-white py-2 px-4 rounded transition-colors duration-300 flex items-center justify-between"
+                          >
+                            <span className="flex items-center">
+                              <Github className="w-4 h-4 mr-2" />
+                              View on GitHub
+                            </span>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                        {message.links.demo && (
+                          <a
+                            href={message.links.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block bg-gray-600 hover:bg-blue-500 text-white py-2 px-4 rounded transition-colors duration-300 flex items-center justify-between"
+                          >
+                            <span className="flex items-center">
+                              <ExternalLink className="w-4 h-4 mr-2" />
+                              View Live Demo
+                            </span>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
-              {isLoading && (
-                <div className="flex justify-start items-center space-x-2 my-4">
-                  <div className="loading-dots">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-              )}
+              <LoadingAnimation isLoading={isLoading} />
               <div ref={chatEndRef} />
             </ScrollArea>
             <form onSubmit={handleSendMessage} className="flex space-x-2">
@@ -379,38 +448,7 @@ export function ChatInterface() {
           <a href="#" className="text-purple-400 hover:text-purple-300 mx-2">Privacy Policy</a>
         </div>
       </footer>
-
-      <style jsx global>{`
-        .loading-dots {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 24px;
-        }
-
-        .loading-dots div {
-          width: 8px;
-          height: 8px;
-          margin: 0 4px;
-          background-color: #8B5CF6;
-          border-radius: 50%;
-          animation: bounce 0.6s infinite alternate;
-        }
-
-        .loading-dots div:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-
-        .loading-dots div:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-
-        @keyframes bounce {
-          to {
-            transform: translateY(-8px);
-          }
-        }
-      `}</style>
     </div>
   )
 }
+
